@@ -1,0 +1,125 @@
+\documentclass[acmlarge]{acmart}
+
+\usepackage{booktabs} % For formal tables
+\usepackage{graphicx}
+\usepackage[spanish]{babel}
+
+
+\usepackage[ruled]{algorithm2e} % For algorithms
+\renewcommand{\algorithmcfname}{ALGORITHM}
+\SetAlFnt{\small}
+\SetAlCapFnt{\small}
+\SetAlCapNameFnt{\small}
+\SetAlCapHSkip{0pt}
+\IncMargin{-\parindent}
+
+% Metadata Information
+\acmJournal{PACMHCI}
+\acmVolume{1}
+\acmNumber{1}
+\acmArticle{1}
+\acmYear{2025}
+\acmMonth{12}
+\acmArticleSeq{1}
+
+%\acmBadgeR[http://ctuning.org/ae/ppopp2016.html]{ae-logo}
+%\acmBadgeL[http://ctuning.org/ae/ppopp2016.html]{ae-logo}
+
+
+% Copyright
+\setcopyright{none}
+%\setcopyright{acmlicensed}
+%\setcopyright{rightsretained}
+%\setcopyright{usgov}
+%\setcopyright{usgovmixed}
+%\setcopyright{cagov}
+%\setcopyright{cagovmixed}
+
+% DOI
+%\acmDOI{0000001.0000001}
+
+
+% Document starts
+\begin{document}
+	% Title portion
+	\title{Arquitectura en Sistemas Distribuidos} 
+	\author{GOMEZ EDGAR}
+	\affiliation{%
+		\institution{Universidad Central de Venezuela}
+		\city{Caracas}
+		\country{Venezuela}}
+	
+	
+\begin{abstract}
+	La organización de los sistemas distribuidos es crucial ya que se encuentran distribuidos en múltiples máquinas. Una forma de organizarlos es en un conjunto de componentes de software que constituyen un sistema. Este tipo de organización da como origen una arquitectura de software que nos dice cómo los diferentes componentes están organizados y cómo interactúan entre ellos.
+\end{abstract}
+
+\ccsdesc[500]{Organización de sistemas informáticos~Sistemas Distribuidos}
+\ccsdesc[300]{Organización de sistemas informáticos~Arquitectura de software}
+
+\keywords{Sistemas Distribuidos, Arquitectura de Software, nodos en software, super nodos en software}
+
+\maketitle
+
+\section{Introducción}
+Los sistemas distribuidos se encuentran compuestos y organizados en componentes de software; a esta estructura es a la que denominamos arquitectura de software.
+
+Es importante dotar a un sistema distribuido de una arquitectura de software ya que otorga la facilidad de separar componentes que llevan a cabo una tarea específica en particular, además de que podemos escalar el sistema más fácilmente cuando este lo requiera. También podemos agregar nuevos componentes o modificarlos sin tener que modificar los componentes ya existentes. Esta manejabilidad se alcanza porque cada componente cumple con interfaces bien definidas que, al ser reemplazado por otro, no afecta la operación del sistema.
+
+La forma de comunicación entre componentes es a través de un conector que maneja la coordinación y cooperación entre componentes. Un ejemplo de comunicación entre componentes es a través de la red mediante el protocolo TCP/IP o comunicación usando sockets.
+
+\section{Arquitectura del Sistema}
+Como los sistemas distribuidos están organizados considerando cómo los componentes de software están colocados, decidiendo cómo interactúan entre ellos, da como origen el término arquitectura del sistema, las cuales pueden ser centralizadas o descentralizadas.
+
+\subsection{Arquitectura Centralizada}
+Podemos referirnos a un sistema que implementa un cliente y un servidor. Estos sistemas están separados en tres niveles: la interfaz de usuario, el procesamiento y el manejo de los datos (nivel de persistencia).
+
+El nivel de interfaz de usuario maneja cómo el usuario interactúa con la aplicación, el nivel de los datos o nivel de persistencia maneja cómo se opera a nivel de una base de datos o archivos de sistema, y el nivel de procesamiento es el que contiene las reglas del negocio (qué funcionalidad cumple el componente).
+
+Este tipo de arquitectura por lo general se compone de estos tres niveles. En sistemas distribuidos, por lo general los niveles están distribuidos en diferentes máquinas; es posible que el nivel de procesamiento esté distribuido entre diferentes máquinas o el nivel de interfaz de usuario esté en otro servidor distinto.
+
+Cuando distribuimos la aplicación de esta manera cliente-servidor con múltiples máquinas, estamos hablando de una distribución vertical. La característica distintiva de la distribución vertical es que se logra colocando componentes relacionados lógicamente en distintas máquinas.
+
+\subsection{Arquitectura Descentralizada}
+La distribución vertical es solo una forma de organizar las aplicaciones cliente-servidor. En las arquitecturas modernas, suele ser la distribución de los clientes y los servidores lo que cuenta, lo que denominamos distribución horizontal.
+
+En este tipo de distribución, un cliente o servidor puede dividirse físicamente en partes lógicamente equivalentes, pero cada una opera con su propia porción del conjunto de datos, equilibrando así la carga. Una clase de arquitecturas de sistemas modernas que admiten la distribución horizontal es conocida como sistemas peer-to-peer.
+
+\subsection{Diferencias entre una distribución horizontal y vertical}
+La distribución vertical se refiere a la distribución de las diferentes capas en una arquitectura multitier (de múltiples niveles) a través de múltiples máquinas. En principio, cada capa se implementa en una máquina diferente. La distribución horizontal aborda la distribución de una única capa a través de múltiples máquinas, como por ejemplo distribuir una sola base de datos.
+
+\section{Nodos}
+Las arquitecturas peer-to-peer están compuestas de nodos, cada uno de los cuales se comporta como cliente-servidor comunicándose con otros nodos. A gran escala, comienzan a observarse deficiencias, en especial en el método de búsqueda por inundación (flooding): cada consulta se propaga de un nodo a otro, consumiendo más ancho de banda; no hay un índice o conocimiento global; encontrar un recurso poco común requiere preguntar a muchos nodos, lo que resulta en altas latencias y muchas veces en fracasos. Poca escalabilidad: a medida que crece el número de nodos, el tráfico total de mensajes para mantenimiento y búsquedas crece de forma que puede volverse insostenible. La red se satura con su propio tráfico de control.
+
+Para solucionar estos problemas, se introduce el concepto de supernodos.
+
+\subsection{Supernodos}
+Un supernodo es un nodo especial en una red peer-to-peer (P2P) que asume roles y responsabilidades más allá de los de un nodo común, generalmente debido a sus mayores recursos (como ancho de banda, capacidad de procesamiento o tiempo de actividad).
+
+Los nodos comunes (hojas) solo se comunican con su supernodo asignado. Las consultas se envían al supernodo, que tiene un índice local de los recursos de sus nodos hijos. Si el supernodo no tiene el recurso, reenvía la consulta solo a otros supernodos. La red de supernodos es órdenes de magnitud más pequeña que la red total, por lo que el tráfico de inundación se limita a esta subred de alto rendimiento.
+
+Al tener índices parciales, los supernodos pueden responder a las consultas de manera directa o redirigirlas de manera más inteligente, sin necesidad de molestar a una gran cantidad de nodos.
+
+\subsection{Requerimientos de un Supernodo}
+Un supernodo debe cumplir tres criterios esenciales: garantizar una alta disponibilidad debido a su carácter de dependencia para otros nodos, poseer la capacidad de procesamiento necesaria y, fundamentalmente, ser confiable en el desempeño de sus funciones.
+
+\section{Conclusión}
+La distribución vertical organiza el sistema en capas lógicas especializadas (como presentación, lógica y datos) desplegadas en máquinas distintas, privilegiando la separación de responsabilidades. En contraste, la distribución horizontal replica una misma capa funcional a través de múltiples nodos equivalentes para lograr escalabilidad y descentralización, típico de las arquitecturas P2P.
+
+El concepto de supernodo surge como una evolución necesaria dentro de la distribución horizontal para superar sus limitaciones de eficiencia y tráfico excesivo. Un supernodo efectivo debe reunir tres atributos esenciales: alta disponibilidad (por ser punto de dependencia de otros nodos), suficiente capacidad de procesamiento y ancho de banda, y, fundamentalmente, confiabilidad operativa para desempeñar sus funciones de coordinación, indexación y enrutamiento de manera consistente.
+
+% Bibliografía
+\begin{thebibliography}{1}
+	
+	\bibitem{Tanenbaum2007}
+	Tanenbaum, A. S. and Van Steen, M.
+	\newblock {\em Distributed Systems: Principles and Paradigms (2nd Edition)}.
+	\newblock Pearson Prentice Hall, Upper Saddle River, NJ 07458, 2007.
+	
+\end{thebibliography}
+	
+	% The default list of authors is too long for headers}
+%\renewcommand{\shortauthors}{G. Zhou et al.}
+
+
+\end{document}
