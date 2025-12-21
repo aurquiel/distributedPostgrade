@@ -1,0 +1,144 @@
+\documentclass[acmlarge]{acmart}
+
+\usepackage{booktabs} % For formal tables
+\usepackage{graphicx}
+\usepackage[spanish]{babel}
+
+
+\usepackage[ruled]{algorithm2e} % For algorithms
+\renewcommand{\algorithmcfname}{ALGORITHM}
+\SetAlFnt{\small}
+\SetAlCapFnt{\small}
+\SetAlCapNameFnt{\small}
+\SetAlCapHSkip{0pt}
+\IncMargin{-\parindent}
+
+% Metadata Information
+\acmJournal{PACMHCI}
+\acmVolume{1}
+\acmNumber{1}
+\acmArticle{1}
+\acmYear{2025}
+\acmMonth{12}
+\acmArticleSeq{1}
+
+%\acmBadgeR[http://ctuning.org/ae/ppopp2016.html]{ae-logo}
+%\acmBadgeL[http://ctuning.org/ae/ppopp2016.html]{ae-logo}
+
+
+% Copyright
+\setcopyright{none}
+%\setcopyright{acmlicensed}
+%\setcopyright{rightsretained}
+%\setcopyright{usgov}
+%\setcopyright{usgovmixed}
+%\setcopyright{cagov}
+%\setcopyright{cagovmixed}
+
+% DOI
+%\acmDOI{0000001.0000001}
+
+
+% Document starts
+\begin{document}
+	% Title portion
+	\title{Experimento 5} 
+	\author{GÓMEZ EDGAR}
+	\affiliation{%
+		\institution{Universidad Central de Venezuela}
+		\city{Caracas}
+		\country{Venezuela}}
+	
+	\begin{abstract}
+	Este experimento agrego la comunicación del padre a los hijos mediante argumentos de línea de comandos en Python. Se demuestra cómo un proceso padre puede enviar parámetros personalizados a múltiples hijos durante su creación. Este mecanismo permite al padre configurar individualmente el comportamiento de cada proceso hijo, estableciendo un patrón de comunicación inicial esencial en arquitecturas maestro-trabajador de sistemas distribuidos.
+	\end{abstract}
+	
+	\ccsdesc[500]{Organización de sistemas informáticos~Sistemas Distribuidos}
+	\ccsdesc[300]{Organización de sistemas informáticos~Hilos en software}
+	\ccsdesc[300]{Organización de sistemas informáticos~Procesos en software}
+	
+	\keywords{Sistemas Distribuidos, Arquitectura de Software, procesos en software, hilos en software}
+	
+	\maketitle
+	
+	\section{Introducción}
+	 Este experimento se enfoca en la comunicación del padre hacia los hijos mediante argumentos de línea de comandos. A diferencia de enfoques previos que utilizaban tuberías para comunicación durante la ejecución, aquí el padre envía información a los hijos en el momento mismo de su creación. Se implementa un sistema donde cada hijo recibe dos parámetros específicos: un mensaje identificador único y un tiempo de espera personalizado que determina la duración de su tarea simulada. Este mecanismo permite inicializar procesos hijos con configuraciones diferenciadas, simulando escenarios reales donde un coordinador debe asignar trabajos con parámetros específicos a múltiples trabajadores en sistemas distribuidos.
+	
+	\section{Proceso Padre}
+	
+	Hemos modificado el código del padre para que pase argumentos al proceso hijo como una fomar de comunicación del proceso padre a sus hijos. Pasamos como argumento un mensaje y como segundo argumento el tiempo de espera del hijo que simula una carga de trabajo en el hijo.
+	
+	\begin{verbatim}
+		import os
+		import subprocess
+		
+		print(f"Hola, soy el proceso padre. Mi PID es: {os.getpid()}")
+		print("Creando procesos hijos...")
+		
+		array = []
+		for i in range(5):
+			# Iniciar el proceso hijo con stdout por pipe (el hijo enviará datos al padre)
+			nuevo = subprocess.Popen(
+					["python", "hijo.py", f"Mensaje_desde_padre_{i}", str(i * 2)],
+					stdout=subprocess.PIPE,  # Redirigir stdout del hijo a una tubería
+					stderr=subprocess.PIPE,
+					text=True,  # Trabajar con texto en lugar de bytes
+					bufsize=1,  # Buffer en línea (line-buffered)
+					universal_newlines=True  # Compatibilidad con nuevas líneas
+						)
+			array.append(nuevo)
+		
+		for p in array:
+			print(f"El proceso hijo se ha creado con el PID: {p.pid}")
+		
+		# Esperar a cada hijo y leer lo que envió por stdout
+		for p in array:
+			p.wait()  # espera a que el hijo termine
+		
+			if p.stdout:
+			salida = p.stdout.read()  # leer todo lo enviado por el hijo
+			p.stdout.close()
+			else:
+			salida = ""
+		
+			print(f"Salida del hijo PID {p.pid}:\n{salida.strip()}")
+			print(f"El proceso hijo con PID {p.pid} ha terminado.")
+		
+		print("Adiós, soy el proceso padre.")
+	\end{verbatim}
+	
+	\section{Proceso Hijo}
+	
+	Se ha modificado el proceso hijo para que reciba dos argumentos, el primero un mensaje del padre y el segundo el tiempo de espera que simula una carga de trabajo.
+	
+	\begin{verbatim}
+		import os
+		import time
+		import sys
+		
+		mensaje_desde_el_padre = sys.argv[1] if len(sys.argv) > 1 else "No se recibió ningún mensaje del padre."
+		sleep_desde_el_padre = int(sys.argv[2]) if len(sys.argv) > 2 else 1
+		
+		sys.stdout.write(f"Hola, soy el proceso hijo. Mi PID es: {os.getpid()}.\n")
+		sys.stdout.flush()
+		sys.stdout.write(f"Mensaje recibido del padre: {mensaje_desde_el_padre}\n")
+		sys.stdout.flush()
+		time.sleep(sleep_desde_el_padre) # Simula una tarea que toma sleep_desde_el_padre segundos
+		sys.stdout.write("El proceso hijo ha terminado su tarea.\n")
+		sys.stdout.flush()
+	\end{verbatim}
+	
+	\section{Resultados de la ejecución}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\linewidth]{argumentosDesdePadreAHijo}
+		\caption[Fig 1]{Comunicación desde el padre al hijo.}
+		\label{fig:argumentosdesdepadreahijo}
+	\end{figure}
+	
+	La ejecución demuestra una comunicación efectiva del padre hacia los hijos mediante argumentos de línea de comandos. En el momento de crear cada proceso hijo, el padre envía dos parámetros específicos: un mensaje personalizado (\texttt{Mensaje\_desde\_padre\_X}) y un tiempo de espera diferenciado (\texttt{i * 2} segundos). Cada hijo recibe estos argumentos a través de \texttt{sys.argv} y los utiliza directamente en su ejecución, mostrando el mensaje recibido y ajustando su tiempo de simulación de trabajo según el valor especificado por el padre.
+	
+	\section{Conclusión}
+	El experimento demostró exitosamente la comunicación del padre hacia los hijos mediante argumentos de línea de comandos. Se verificó que el padre puede enviar parámetros personalizados (mensajes y tiempos de espera diferenciados) a cada hijo durante su creación, permitiendo configurar individualmente su comportamiento antes de que inicien su ejecución. Este mecanismo de comunicación inicial es especialmente útil en arquitecturas maestro-trabajador donde se requiere asignar tareas con configuraciones específicas desde el inicio. El enfoque implementado proporciona un método eficiente para la parametrización de procesos hijos en sistemas distribuidos, estableciendo las bases para una ejecución controlada y configurable de trabajos concurrentes.
+\end{document}

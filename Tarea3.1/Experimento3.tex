@@ -1,0 +1,142 @@
+\documentclass[acmlarge]{acmart}
+
+\usepackage{booktabs} % For formal tables
+\usepackage{graphicx}
+\usepackage[spanish]{babel}
+
+
+\usepackage[ruled]{algorithm2e} % For algorithms
+\renewcommand{\algorithmcfname}{ALGORITHM}
+\SetAlFnt{\small}
+\SetAlCapFnt{\small}
+\SetAlCapNameFnt{\small}
+\SetAlCapHSkip{0pt}
+\IncMargin{-\parindent}
+
+% Metadata Information
+\acmJournal{PACMHCI}
+\acmVolume{1}
+\acmNumber{1}
+\acmArticle{1}
+\acmYear{2025}
+\acmMonth{12}
+\acmArticleSeq{1}
+
+%\acmBadgeR[http://ctuning.org/ae/ppopp2016.html]{ae-logo}
+%\acmBadgeL[http://ctuning.org/ae/ppopp2016.html]{ae-logo}
+
+
+% Copyright
+\setcopyright{none}
+%\setcopyright{acmlicensed}
+%\setcopyright{rightsretained}
+%\setcopyright{usgov}
+%\setcopyright{usgovmixed}
+%\setcopyright{cagov}
+%\setcopyright{cagovmixed}
+
+% DOI
+%\acmDOI{0000001.0000001}
+
+
+% Document starts
+\begin{document}
+	% Title portion
+	\title{Experimento 3} 
+	\author{GÓMEZ EDGAR}
+	\affiliation{%
+		\institution{Universidad Central de Venezuela}
+		\city{Caracas}
+		\country{Venezuela}}
+	
+	\begin{abstract}
+		Este experimento implementa la comunicación entre procesos utilizando tuberías (pipes) en Python. Se demuestra cómo un proceso padre puede crear múltiples hijos, recibir datos de ellos a través de \texttt{stdout}, y sincronizar su ejecución. Se exploran mecanismos de comunicación interprocesos (IPC) mediante \texttt{subprocess.PIPE} y \texttt{sys.stdout.flush()}, conceptos esenciales para sistemas distribuidos donde el intercambio de datos entre procesos es fundamental.
+	\end{abstract}
+	
+	\ccsdesc[500]{Organización de sistemas informáticos~Sistemas Distribuidos}
+	\ccsdesc[300]{Organización de sistemas informáticos~Hilos en software}
+	\ccsdesc[300]{Organización de sistemas informáticos~Procesos en software}
+	
+	\keywords{Sistemas Distribuidos, Arquitectura de Software, procesos en software, hilos en software}
+	
+	\maketitle
+	
+	\section{Introducción}
+	La comunicación entre procesos (IPC, por sus siglas en inglés) es un componente crítico en sistemas distribuidos y aplicaciones concurrentes. Mientras que experimentos anteriores se centraron en la creación y sincronización de procesos, este trabajo avanza hacia la transferencia de datos entre procesos padre e hijos utilizando tuberías (pipes). Se implementa un mecanismo donde múltiples hijos envían mensajes estructurados al padre a través de \texttt{stdout}, y el padre los captura mediante \texttt{subprocess.PIPE}. Este enfoque simula escenarios reales donde los procesos secundarios deben reportar resultados o estados a un proceso coordinador, una necesidad común en arquitecturas de software distribuidas y sistemas paralelos.
+	
+	\section{Proceso Padre}
+	
+	Se ha modificado el proceso padre para que pueda recibir datos de los hijos a través de los pipes stdout y stdin. El código espera la finalización de los procesos hijos con \texttt{wait()}, luego comprueba si el proceso hijo envió información al padre y, en caso afirmativo, la muestra en la consola.
+	
+	\begin{verbatim}
+		import os
+		import subprocess
+		
+		print(f"Hola, soy el proceso padre. Mi PID es: {os.getpid()}")
+		print("Creando procesos hijos...")
+		
+		array = []
+		for i in range(5):
+			# Iniciar el proceso hijo con stdout por pipe (el hijo enviará datos al padre)
+			nuevo = subprocess.Popen(
+						["python", "hijo.py"],
+						stdout=subprocess.PIPE,  # Redirigir stdout del hijo a una tubería
+						stderr=subprocess.PIPE,
+						text=True,  # Trabajar con texto en lugar de bytes
+						bufsize=1,  # Buffer en línea (line-buffered)
+						universal_newlines=True  # Compatibilidad con nuevas líneas
+					)
+			array.append(nuevo)
+		
+		for p in array:
+			print(f"El proceso hijo se ha creado con el PID: {p.pid}")
+		
+		# Esperar a cada hijo y leer lo que envió por stdout
+		for p in array:
+			p.wait()  # espera a que el hijo termine
+		
+			if p.stdout:
+				salida = p.stdout.read()  # leer todo lo enviado por el hijo
+				p.stdout.close()
+			else:
+				salida = ""
+		
+			print(f"Salida del hijo PID {p.pid}:\n{salida.strip()}")
+			print(f"El proceso hijo con PID {p.pid} ha terminado.")
+		
+		print("Adiós, soy el proceso padre.")
+	\end{verbatim}
+	
+	\section{Proceso Hijo}
+	
+	El proceso hijo envía información al padre escribiendo usando \texttt{sys.stdout.write()} y luego enviando los datos con \texttt{sys.stdout.flush()}. También tiene una espera de cinco segundos simulando una carga de trabajo realizada por el proceso hijo.
+	
+	\begin{verbatim}
+		import os
+		import time
+		import sys
+		
+		sys.stdout.write(f"Hola, soy el proceso hijo. Mi PID es: {os.getpid()}.\n")
+		sys.stdout.flush()
+		time.sleep(5) # Simula una tarea que toma 5 segundos
+		sys.stdout.write("El proceso hijo ha terminado su tarea.\n")
+		sys.stdout.flush()
+	\end{verbatim}
+	
+	\section{Resultados de la ejecución}
+	
+	Ejecutando el código mostrado de los procesos obtenemos en la terminal la siguiente respuesta, como se observa en la Fig 1.
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\linewidth]{hijoEnviaDataAlPadre}
+		\caption[Fig 1]{Resultado de los hijos enviando información al padre.}
+		\label{fig:hijoenviadataalpadre}
+	\end{figure}
+	
+	Se pueden observar los PID de cada proceso, lo que demuestra que son procesos completamente diferentes. Se muestra la creación de cinco procesos hijos con PID únicos. Se logra apreciar los datos enviados desde los procesos hijos al padre luego de la línea que señala \texttt{``Salida del hijo PID: X''}, con los mensajes: \texttt{``Hola soy el proceso hijo. Mi PID es: X''} y \texttt{``El proceso hijo ha terminado su tarea''}. Estos dos mensajes fueron enviados desde el hijo hasta el padre y el padre fue el encargado de mostrarlos en consola.
+	
+	\section{Conclusión}
+	El experimento demostró exitosamente la comunicación unidireccional de hijo a padre mediante tuberías (pipes) en Python. Se verificó que el proceso padre puede crear múltiples hijos, recibir datos de ellos a través de \texttt{stdout}, y sincronizar su ejecución utilizando \texttt{wait()}. Los mecanismos de comunicación interprocesos (IPC) implementados con \texttt{subprocess.PIPE} y \texttt{sys.stdout.flush()} permitieron un intercambio de datos efectivo, evidenciando su importancia en sistemas distribuidos donde la transferencia de resultados desde procesos hijos a un proceso coordinador es fundamental. Este patrón es aplicable en arquitecturas maestro-trabajador y sistemas de procesamiento paralelo.
+	
+\end{document}
