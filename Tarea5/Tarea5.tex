@@ -1,0 +1,303 @@
+\documentclass[acmlarge]{acmart}
+
+\usepackage{booktabs} % For formal tables
+\usepackage{graphicx}
+\usepackage[spanish]{babel}
+
+
+\usepackage[ruled]{algorithm2e} % For algorithms
+\renewcommand{\algorithmcfname}{ALGORITHM}
+\SetAlFnt{\small}
+\SetAlCapFnt{\small}
+\SetAlCapNameFnt{\small}
+\SetAlCapHSkip{0pt}
+\IncMargin{-\parindent}
+
+% Metadata Information
+\acmJournal{PACMHCI}
+\acmVolume{1}
+\acmNumber{1}
+\acmArticle{1}
+\acmYear{2025}
+\acmMonth{12}
+\acmArticleSeq{1}
+
+%\acmBadgeR[http://ctuning.org/ae/ppopp2016.html]{ae-logo}
+%\acmBadgeL[http://ctuning.org/ae/ppopp2016.html]{ae-logo}
+
+
+% Copyright
+\setcopyright{none}
+%\setcopyright{acmlicensed}
+%\setcopyright{rightsretained}
+%\setcopyright{usgov}
+%\setcopyright{usgovmixed}
+%\setcopyright{cagov}
+%\setcopyright{cagovmixed}
+
+% DOI
+%\acmDOI{0000001.0000001}
+
+
+% Document starts
+\begin{document}
+	% Title portion
+	\title{SERVIDOR DNS LOCAL} 
+	\author{GÓMEZ EDGAR}
+	\affiliation{%
+		\institution{Universidad Central de Venezuela}
+		\city{Caracas}
+		\country{Venezuela}}
+	
+	\begin{abstract}
+		Este documento presenta la implementación y evaluación de un servidor DNS local desarrollado en Python utilizando la biblioteca \texttt{dnserver}. El servidor permite la resolución de nombres de dominio para diferentes tipos de registros DNS (A, CNAME, MX, NS, TXT, SOA, SRV) en un entorno controlado. Se describe la configuración de zonas DNS mediante archivos TOML, la implementación del servidor y cliente de prueba, y se presentan los resultados de las consultas realizadas. La implementación demuestra los principios fundamentales del sistema de nombres de dominio y su funcionamiento en sistemas distribuidos.
+	\end{abstract}
+	
+	\ccsdesc[500]{Organización de sistemas informáticos~Sistemas Distribuidos}
+	\ccsdesc[300]{Organización de sistemas informáticos~Servidor DNS}
+	
+	\keywords{Sistemas Distribuidos, servidor DNS}
+	
+	\maketitle
+	
+	\section{Introducción}
+	El Sistema de Nombres de Dominio (DNS) es un componente crítico de la infraestructura de Internet que traduce nombres de dominio legibles por humanos en direcciones IP numéricas. Esta práctica se enfoca en implementar un servidor DNS local en Python para comprender los principios fundamentales de la resolución de nombres en sistemas distribuídos.
+	
+	Los objetivos específicos de esta implementación son:
+	\begin{itemize}
+		\item Configurar un servidor DNS local que responda consultas para múltiples tipos de registros
+		\item Implementar un cliente de prueba que realice consultas a los diferentes tipos de registros configurados
+		\item Analizar las respuestas del servidor y validar su correcto funcionamiento
+		\item Comprender la estructura y formato de los diferentes tipos de registros DNS
+	\end{itemize}
+	
+	En esta implementación se configuraron los siguientes tipos de registros:
+	
+	\begin{itemize}
+		\item \textbf{Registro A (Address):} Asocia un nombre de dominio con una dirección IPv4
+		\item \textbf{Registro CNAME (Canonical Name):} Crea un alias para un nombre de dominio
+		\item \textbf{Registro MX (Mail Exchange):} Especifica servidores de correo para el dominio
+		\item \textbf{Registro NS (Name Server):} Identifica servidores DNS autoritativos para el dominio (apunta a servidores DNS que contienen los registros DNS oficiales del dominio)
+		\item \textbf{Registro TXT (Text):} Contiene información textual, comúnmente usada para verificaciones
+		\item \textbf{Registro SOA (Start of Authority):} Contiene información administrativa sobre la zona
+		\item \textbf{Registro SRV (Service):} Especifica información sobre servicios disponibles
+	\end{itemize}
+	
+	\section{Implementación del Servidor DNS}
+	
+	\subsection{Configuración del Entorno}
+	Para la implementación se utilizó Python 3.x y las siguientes bibliotecas:
+	\begin{itemize}
+		\item \texttt{dnserver}: Para crear y gestionar el servidor DNS
+		\item \texttt{dnslib}: Para manejar paquetes DNS
+		\item \texttt{toml}: Para leer archivos de configuración en formato TOML
+	\end{itemize}
+	
+	\subsection{Archivo de Configuración de Zonas}
+	Se creó un archivo \texttt{zones.toml} que contiene la definición de todos los registros DNS que el servidor responderá. Cada registro se define con su host, tipo y respuesta correspondiente.
+	
+	\begin{verbatim}
+		[[zones]]
+		host = 'misitio.com'
+		type = 'A'
+		answer = '192.168.1.120'
+		
+		[[zones]]
+		host = 'alias.com'
+		type = 'CNAME'
+		answer = 'result.com'
+		
+		[[zones]]
+		host = 'email.com'
+		type = 'MX'
+		answer = ['whatever.com.', 5]
+		
+		[[zones]]
+		host = 'example.com'
+		type = 'MX'
+		answer = ['mx2.whatever.com.', 10]
+		
+		[[zones]]
+		host = 'example.com'
+		type = 'MX'
+		answer = ['mx3.whatever.com.', 20]
+		
+		[[zones]]
+		host = 'group.com'
+		type = 'NS'
+		answer = 'ns1.group.com.'
+		
+		[[zones]]
+		host = 'group.com'
+		type = 'NS'
+		answer = 'ns2.group.com.'
+		
+		[[zones]]
+		host = 'text.com'
+		type = 'TXT'
+		answer = 'hello this is some text'
+		
+		[[zones]]
+		host = 'soaex.com'
+		type = 'SOA'
+		answer = ['ns1.example.com', 'dns.example.com']
+		
+		[[zones]]
+		host = 'testing.com'
+		type = 'TXT'
+		# because the next record exceeds 255 in length dnserver will automatically
+		# split it into a multipart record, the new lines here have no effect on that
+		answer = """
+		one long value: IICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAg
+		FWZUed1qcBziAsqZ/LzT2ASxJYuJ5sko1CzWFhFuxiluNnwKjSknSjanyYnm0vro4dhAtyiQ7O
+		PVROOaNy9Iyklvu91KuhbYi6l80Rrdnuq1yjM//xjaB6DGx8+m1ENML8PEdSFbKQbh9akm2bkN
+		w5DC5a8Slp7j+eEVHkgV3k3oRhkPcrKyoPVvniDNH+Ln7DnSGC+Aw5Sp+fhu5aZmoODhhX5/1m
+		ANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA26JaFWZUed1qcBziAsqZ/LzTF2ASxJYuJ5sk
+		"""
+		
+		[[zones]]
+		host = '_caldavs._tcp.example.com'
+		type = 'SRV'
+		answer = [0, 1, 80, 'caldav']
+	\end{verbatim}
+	
+	\subsection{Servidor DNS en Python}
+	El servidor se implementó creando una instancia de \texttt{DNSServer} cargada desde el archivo de configuración TOML. Se configuró para escuchar en el puerto 5053.
+	
+	Luego se realizan el llamado de los registro al servidor DNS con la libreria dnslib pasando el nombre y el tipo, luego se lee la respuesta del servidor DNS
+	
+	\begin{verbatim}
+		from dnserver import DNSServer
+		from dnslib import DNSRecord
+		import time
+		
+		server = DNSServer.from_toml('zones.toml', port=5053)
+		server.start()
+		assert server.is_running
+		
+		queries = [
+			("misitio.com", "A"),
+			("alias.com", "CNAME"),
+			("email.com", "MX"),
+			("group.com", "NS"),
+			("text.com", "TXT"),
+			("soaex.com", "SOA"),
+			("testing.com", "TXT"),
+			("_caldavs._tcp.example.com", "SRV"),
+		]
+		
+		try:
+			for name, qtype in queries:
+				q = DNSRecord.question(name, qtype)
+				resp = q.send("127.0.0.1", 5053, timeout=2)
+				print(f"== {name} {qtype} ==")
+				print(DNSRecord.parse(resp))
+				time.sleep(0.1)
+		finally:
+			server.stop()
+	\end{verbatim}
+	
+	\section{Resultados de la Ejecución}
+	
+	El servidor se ejecutó exitosamente, cargando 11 registros de zona desde el archivo de configuración. A continuación se presentan los resultados más relevantes de las consultas realizadas:
+	
+	\begin{table}[h]
+		\centering
+		\caption{Resumen de respuestas DNS obtenidas}
+		\label{tab:resultados}
+		\begin{tabular}{p{4cm}p{2cm}p{6cm}}
+			\toprule
+			\textbf{Dominio} & \textbf{Tipo} & \textbf{Respuesta} \\
+			\midrule
+			misitio.com & A & 192.168.1.120 (TTL: 300) \\
+			alias.com & CNAME & result.com. (TTL: 300) \\
+			email.com & MX & whatever.com. con prioridad 5 (TTL: 300) \\
+			group.com & NS & ns1.group.com. y ns2.group.com. (TTL: 86400) \\
+			text.com & TXT & "hello this is some text" (TTL: 300) \\
+			soaex.com & SOA & ns1.example.com. dns.example.com. (TTL: 86400) \\
+			testing.com & TXT & Registro TXT largo dividido en múltiples partes \\
+			\_caldavs.\_tcp.example.com & SRV & 0 1 80 caldav (TTL: 300) \\
+			\bottomrule
+		\end{tabular}
+	\end{table}
+	
+	\subsection{Análisis de las Respuestas}
+	
+	\paragraph{Registro A:} La consulta a \texttt{misitio.com} retornó correctamente la dirección IP 192.168.1.120 con un TTL de 300 segundos. Fig1
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\linewidth]{1}
+		\caption{Resolucion direccion IPV4}
+		\label{fig:1}
+	\end{figure}
+	
+	 \paragraph{Registro CNAME:} El alias \texttt{alias.com} se resolvió exitosamente a \texttt{result.com}.
+	 
+	 \begin{figure}[H]
+	 	\centering
+	 	\includegraphics[width=0.7\linewidth]{2}
+	 	\caption{Resolucion alias}
+	 	\label{fig:2}
+	 \end{figure}
+	 
+	
+	\paragraph{Registro MX:} Para \texttt{email.com} se obtuvo un servidor de correo con prioridad 5, indicando el orden preferencial para entrega de correo.
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\linewidth]{3}
+		\caption{Resolucion de correos}
+		\label{fig:3}
+	\end{figure}
+	
+	
+	\paragraph{Registro NS:} Se configuraron dos servidores de nombres para \texttt{group.com}, proporcionando redundancia.
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\linewidth]{4}
+		\caption{Resolucion de servidores de nombre}
+		\label{fig:4}
+	\end{figure}
+	
+	\paragraph{Registro TXT:} El servidor manejó correctamente registros TXT largos, dividiéndolos automáticamente cuando excedieron el límite de 255 caracteres.
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\linewidth]{5}
+		\caption{Resolcion de texto corto}
+		\label{fig:5}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\linewidth]{7}
+		\caption{Resolcion texto largo}
+		\label{fig:6}
+	\end{figure}
+	
+	\paragraph{Registro SOA:} Incluyó información completa sobre la zona, incluyendo serial number, tiempos de refresh y expire.
+	
+		\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\linewidth]{6}
+		\caption{}
+		\label{fig:7}
+	\end{figure}
+	
+	\paragraph{Registro SRV:} Especificó correctamente los parámetros de servicio para el servicio CalDAV.
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\linewidth]{8}
+		\caption{}
+		\label{fig:8}
+	\end{figure}
+	
+	
+	\section{Conclusión}
+		 Se implementó exitosamente un servidor DNS local en Python capaz de responder consultas para múltiples tipos de registros DNS. El servidor demostró ser funcional para propósitos educativos y de desarrollo, mostrando los principios fundamentales de la resolución de nombres en sistemas distribuídos.
+		
+		La implementación confirmó la correcta interpretación y respuesta de los diferentes tipos de registros configurados, incluyendo el manejo automático de registros TXT largos. El uso de la biblioteca \texttt{dnserver} simplificó significativamente el desarrollo, permitiendo enfocarse en los aspectos conceptuales del DNS.
+\end{document}
