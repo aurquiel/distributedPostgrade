@@ -1,0 +1,128 @@
+\documentclass[acmlarge]{acmart}
+
+\usepackage{booktabs} % For formal tables
+\usepackage{graphicx}
+\usepackage[spanish]{babel}
+
+
+\usepackage[ruled]{algorithm2e} % For algorithms
+\renewcommand{\algorithmcfname}{ALGORITHM}
+\SetAlFnt{\small}
+\SetAlCapFnt{\small}
+\SetAlCapNameFnt{\small}
+\SetAlCapHSkip{0pt}
+\IncMargin{-\parindent}
+
+% Metadata Information
+\acmJournal{PACMHCI}
+\acmVolume{1}
+\acmNumber{1}
+\acmArticle{1}
+\acmYear{2025}
+\acmMonth{12}
+\acmArticleSeq{1}
+
+%\acmBadgeR[http://ctuning.org/ae/ppopp2016.html]{ae-logo}
+%\acmBadgeL[http://ctuning.org/ae/ppopp2016.html]{ae-logo}
+
+
+% Copyright
+\setcopyright{none}
+%\setcopyright{acmlicensed}
+%\setcopyright{rightsretained}
+%\setcopyright{usgov}
+%\setcopyright{usgovmixed}
+%\setcopyright{cagov}
+%\setcopyright{cagovmixed}
+
+% DOI
+%\acmDOI{0000001.0000001}
+
+
+% Document starts
+\begin{document}
+	% Title portion
+	\title{COMUNICACIÓN RCP} 
+	\author{GÓMEZ EDGAR}
+	\affiliation{%
+		\institution{Universidad Central de Venezuela}
+		\city{Caracas}
+		\country{Venezuela}}
+	
+	\begin{abstract}
+	La comunicación mediante Llamada a Procedimiento Remoto (RPC) es un paradigma en sistemas distribuidos que permite a un programa ejecutar procedimientos en espacios de direcciones diferentes, típicamente en máquinas remotas, de manera transparente. Este documento analiza los principios de RPC , enfocándose en sus dos variantes principales: síncrona y asíncrona. Se examinan los componentes esenciales, mecanismos de implementación, ventajas y limitaciones de cada enfoque.
+	\end{abstract}
+	
+	\ccsdesc[500]{Organización de sistemas informáticos~Sistemas Distribuidos}
+	\ccsdesc[300]{Organización de sistemas informáticos~Procedimientos en Programación}
+	\ccsdesc[300]{Organización de sistemas informáticos~Tareas síncronas}
+	\ccsdesc[300]{Organización de sistemas informáticos~Tareas asíncronas}
+	
+	\keywords{Sistemas Distribuidos, RPC}
+	\keywords{Organización de sistemas informáticos, síncorina}
+	\keywords{Organización de sistemas informáticos, asíncornia}
+	
+	\maketitle
+	
+	\section{Introducción}
+	La comunicación RPC (Remote Procedure Call) permite la ejecución de procedimientos en equipos remotos (diferentes al que hace el llamdao del procedimiento) como si se tratase de la llamada de un procedimiento local, el cliente nunca se entera que esta tratando de acceder a un recurso remoto, de esta manera el proceso es transparente para el usuario final. Se oculta la complejidad de la comunicacion generalmente a traves de la red permitiendo al sistema trabajar como si fuera un monolito (centralizado).
+	
+	\section{Comunicación RPC}
+	El RPC como un mecanismo de comunicación entre procesos que permite a un programa (cliente) solicitar la ejecución de un procedimiento en otro programa (servidor) ubicado potencialmente en una máquina diferente. El modelo RPC consta de varios componentes esenciales:
+	
+	\begin{enumerate}
+		\item \textbf{Cliente:} Aplicación que realiza la llamada al procedimiento remoto.
+		\item \textbf{Cliente stub:} Representación local del procedimiento remoto que realiza el empaquetado de parámetros (marshalling) y la comunicación con el servidor.
+		\item \textbf{Servidor stub:} Componente que recibe las solicitudes, desempaqueta los parámetros (unmarshalling) y llama al procedimiento real.
+		\item \textbf{Servidor:} Aplicación que contiene la implementación del procedimiento remoto.
+	\end{enumerate}
+	
+	El proceso de RPC sigue un flujo estandarizado: (1) el cliente llama al stub local, (2) el stub cliente empaqueta los parámetros (marshalling) y los envía al servidor, (3) el stub servidor desempaqueta los parámetros y llama al procedimiento real, (4) el resultado sigue el camino inverso. Esta arquitectura proporciona transparencia de acceso a recursos remotos.
+
+	\section{RPC síncrono}
+	
+	En RPC síncrono, el cliente que realiza la llamada se bloquea hasta que recibe una respuesta del servidor. Este modelo replica más fielmente la semántica de las llamadas a procedimiento locales, donde el llamante espera necesariamente el resultado antes de continuar. Donde el flujo de control es lineas, el cliente espera automáticamente la terminación del proceso remoto, similar al paradigma de programación secuencial, un ejemplo se muestra en la Fig 1.
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\linewidth]{sincrono}
+		\caption{RPC síncrono. (Adaptado de \cite{Tanenbaum2007})}
+		\label{Fig1 RPC síncrono}
+	\end{figure}
+	
+	Algunas de las deventajas o limitaciones del modelo sincrono: El bloqueo del cliente durante la llamada puede llevar a una utilización ineficiente de recursos, especialmente cuando las latencias de red son altas. Además, los fallos de red o del servidor pueden resultar en bloqueos indefinidos, requiriendo mecanismos adicionales como timeouts y manejo de excepciones.
+	
+	\section{RPC asíncrono}
+	El RPC asíncrono, permite que el cliente continúe su ejecución inmediatamente después de realizar la llamada, sin esperar la respuesta del servidor. Como se muestra en la Fig 2.
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\linewidth]{asincrono}
+		\caption{RPC asíncrono. (Adaptado de \cite{Tanenbaum2007})}
+		\label{fig:asincrono}
+	\end{figure}
+	
+	Las ventajas del RPC asíncrono incluyen mejor utilización de recursos, mayor concurrencia y mejor capacidad de respuesta de las aplicaciones cliente, este modelo introduce complejidad en la programación, especialmente en el manejo de la sincronización y el orden de las respuestas.
+	
+	\section{Comparación}
+	
+	Supongamos que un cliente realiza una llamada RPC asíncrona a un servidor y espera a que este devuelva un resultado mediante otra llamada RPC asíncrona. ¿Es este enfoque lo mismo que permitir que el cliente ejecute una llamada RPC normal? ¿Qué sucedería si sustituyéramos las llamadas RPC asíncronas por síncronas?
+	
+	No, no es lo mismo, una llamada de RPC asíncrona retorna un verificación de que se ha aceptado la ejecución del procedimiento remoto al cliente, no devuelve el resultado del procedimiento como en una llamada síncrona, el resultado del procidiento en caso que lo tenga se devolvera en el futuro interrumpiendo al cliente. Si cambiamos los RCP sincronos por asíncornos volvemos al bloqueo del cliente esperando por la respuesta del servidor.
+	
+	\section{Conclusión}
+	La comunicación RPC es esencial en sistemas distribuidos, ofreciendo dos enfoques principales: síncrono y asíncrono. El síncrono bloquea al cliente hasta recibir respuesta, siendo simple pero ineficiente con alta latencia. El asíncrono permite al cliente continuar trabajando mientras espera, mejorando la concurrencia aunque con mayor complejidad.
+	
+	El paradigma RPC añade una capa de transparencia a los sistemas distribuidos y es excelente para usarlo en la configuración cliente-servidor.
+	
+	% Bibliografía
+	\begin{thebibliography}{1}
+		
+		\bibitem{Tanenbaum2007}
+		Tanenbaum, A. S. and Van Steen, M.
+		\newblock {\em Distributed Systems: Principles and Paradigms (2nd Edition)}.
+		\newblock Pearson Prentice Hall, Upper Saddle River, NJ 07458, 2007.
+		
+	\end{thebibliography}
+	
+\end{document}
