@@ -1,9 +1,9 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.12.9)  29 DEC 2025 19:00
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.12.9)  1 FEB 2026 15:22
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**./Tarea4.tex
-(Tarea4.tex
+**./chatBasico.tex
+(chatBasico.tex
 LaTeX2e <2025-11-01>
 L3 programming layer <2025-11-06>
 
@@ -832,16 +832,65 @@ on input line 6.
 LaTeX Encoding Info:    Redeclaring text command \guillemotright (encoding OT1)
  on input line 6.
 
+(C:\Users\Edgar Gomez\AppData\Local\Programs\MiKTeX\tex/latex/algorithms\algori
+thmic.sty
+Package: algorithmic 2009/08/24 v0.1 Document Style `algorithmic'
+\c@ALC@unique=\count337
+\c@ALC@line=\count338
+\c@ALC@rem=\count339
+\c@ALC@depth=\count340
+\ALC@tlm=\skip82
+\algorithmicindent=\skip83
+)
+(C:\Users\Edgar Gomez\AppData\Local\Programs\MiKTeX\tex/latex/listings\listings
+.sty
+\lst@mode=\count341
+\lst@gtempboxa=\box63
+\lst@token=\toks42
+\lst@length=\count342
+\lst@currlwidth=\dimen258
+\lst@column=\count343
+\lst@pos=\count344
+\lst@lostspace=\dimen259
+\lst@width=\dimen260
+\lst@newlines=\count345
+\lst@lineno=\count346
+\lst@maxwidth=\dimen261
+
+(C:\Users\Edgar Gomez\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstpatch
+.sty
+File: lstpatch.sty 2025/11/14 1.11b (Carsten Heinz)
+)
+(C:\Users\Edgar Gomez\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstmisc.
+sty
+File: lstmisc.sty 2025/11/14 1.11b (Carsten Heinz)
+\c@lstnumber=\count347
+\lst@skipnumbers=\count348
+\lst@framebox=\box64
+)
+(C:\Users\Edgar Gomez\AppData\Local\Programs\MiKTeX\tex/latex/listings\listings
+.cfg
+File: listings.cfg 2025/11/14 1.11b listings configuration
+))
+Package: listings 2025/11/14 1.11b (Carsten Heinz)
+
+==> First Aid for listings.sty no longer applied!
+    Expected:
+        2024/09/23 1.10c (Carsten Heinz)
+    but found:
+        2025/11/14 1.11b (Carsten Heinz)
+    so I'm assuming it got fixed.
+
 (C:\Users\Edgar Gomez\AppData\Local\Programs\MiKTeX\tex/latex/algorithm2e\algor
 ithm2e.sty
 Package: algorithm2e 2017/07/18 v5.2 algorithms environments
-\c@AlgoLine=\count337
-\algocf@hangindent=\skip82
+\c@AlgoLine=\count349
+\algocf@hangindent=\skip84
 
 (C:\Users\Edgar Gomez\AppData\Local\Programs\MiKTeX\tex/latex/ifoddpage\ifoddpa
 ge.sty
 Package: ifoddpage 2022/10/18 v1.2 Conditionals for odd/even page detection
-\c@checkoddpage=\count338
+\c@checkoddpage=\count350
 )
 (C:\Users\Edgar Gomez\AppData\Local\Programs\MiKTeX\tex/latex/tools\xspace.sty
 Package: xspace 2014/10/28 v1.13 Space after command names (DPC,MH)
@@ -852,113 +901,118 @@ Package: relsize 2013/03/29 ver 4.1
 LaTeX Info: Redefining \larger on input line 150.
 LaTeX Info: Redefining \smaller on input line 151.
 )
-\skiptotal=\skip83
-\skiplinenumber=\skip84
-\skiprule=\skip85
-\skiphlne=\skip86
-\skiptext=\skip87
-\skiplength=\skip88
-\algomargin=\skip89
-\skipalgocfslide=\skip90
-\algowidth=\dimen258
-\inoutsize=\dimen259
-\inoutindent=\dimen260
-\interspacetitleruled=\dimen261
-\interspacealgoruled=\dimen262
-\interspacetitleboxruled=\dimen263
-\algocf@ruledwidth=\skip91
-\algocf@inoutbox=\box63
-\algocf@inputbox=\box64
-\AlCapSkip=\skip92
-\AlCapHSkip=\skip93
-\algoskipindent=\skip94
-\algocf@nlbox=\box65
-\algocf@hangingbox=\box66
-\algocf@untilbox=\box67
-\algocf@skipuntil=\skip95
-\algocf@capbox=\box68
-\algocf@lcaptionbox=\skip96
-\algoheightruledefault=\skip97
-\algoheightrule=\skip98
-\algotitleheightruledefault=\skip99
-\algotitleheightrule=\skip100
-\c@algocfline=\count339
-\c@algocfproc=\count340
-\c@algocf=\count341
-\algocf@algoframe=\box69
-\algocf@algobox=\box70
+\skiptotal=\skip85
+\skiplinenumber=\skip86
+\skiprule=\skip87
+\skiphlne=\skip88
+\skiptext=\skip89
+\skiplength=\skip90
+\algomargin=\skip91
+\skipalgocfslide=\skip92
+\algowidth=\dimen262
+\inoutsize=\dimen263
+\inoutindent=\dimen264
+\interspacetitleruled=\dimen265
+\interspacealgoruled=\dimen266
+\interspacetitleboxruled=\dimen267
+\algocf@ruledwidth=\skip93
+\algocf@inoutbox=\box65
+\algocf@inputbox=\box66
+\AlCapSkip=\skip94
+\AlCapHSkip=\skip95
+\algoskipindent=\skip96
+\algocf@nlbox=\box67
+\algocf@hangingbox=\box68
+\algocf@untilbox=\box69
+\algocf@skipuntil=\skip97
+\algocf@capbox=\box70
+\algocf@lcaptionbox=\skip98
+\algoheightruledefault=\skip99
+\algoheightrule=\skip100
+\algotitleheightruledefault=\skip101
+\algotitleheightrule=\skip102
+\c@algocfline=\count351
+\c@algocfproc=\count352
+\c@algocf=\count353
+\algocf@algoframe=\box71
+\algocf@algobox=\box72
 )
-Package acmart Info: Using screen mode due to pacmhci on input line 17.
-Class acmart Info: Using journal code pacmhci on input line 17.
-Package hyperref Info: Option `colorlinks' set `true' on input line 43.
-Package hyperref Info: Option `pdfdisplaydoctitle' set `true' on input line 43.
+Package acmart Info: Using screen mode due to pacmhci on input line 21.
+Class acmart Info: Using journal code pacmhci on input line 21.
 
-\c@theorem=\count342
+(C:\Users\Edgar Gomez\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstlang1
+.sty
+File: lstlang1.sty 2025/11/14 1.11b listings language file
+)
+Package hyperref Info: Option `colorlinks' set `true' on input line 52.
+Package hyperref Info: Option `pdfdisplaydoctitle' set `true' on input line 52.
+
+\c@theorem=\count354
  Include comment 'screenonly' Excluding comment 'printonly'
 Include comment 'anonsuppress'
 (C:\Users\Edgar Gomez\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backe
 nd-pdftex.def
 File: l3backend-pdftex.def 2025-10-09 L3 backend support: PDF output (pdfTeX)
-\l__color_backend_stack_int=\count343
-) (Tarea4.aux
-LaTeX Info: Redefining \. on input line 14.
-LaTeX Info: Redefining \% on input line 14.
+\l__color_backend_stack_int=\count355
+) (chatBasico.aux
+LaTeX Info: Redefining \. on input line 12.
+LaTeX Info: Redefining \% on input line 12.
 Package babel Info: 'spanish' activates 'spanish' shorthands.
-(babel)             Reported on input line 14.
+(babel)             Reported on input line 12.
 )
-\openout1 = `Tarea4.aux'.
+\openout1 = `chatBasico.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/nxlmi/m/it on input line 43.
+LaTeX Font Info:    Checking defaults for OML/nxlmi/m/it on input line 52.
 LaTeX Font Info:    Trying to load font information for OML+nxlmi on input line
- 43.
+ 52.
 
 (C:\Users\Edgar Gomez\AppData\Local\Programs\MiKTeX\tex/latex/newtx\omlnxlmi.fd
 File: omlnxlmi.fd 2013/11/19 Fontinst v1.933 font definitions for OML/nxlmi.
 )
-LaTeX Font Info:    ... okay on input line 43.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 43.
-LaTeX Font Info:    ... okay on input line 43.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 43.
-LaTeX Font Info:    ... okay on input line 43.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 43.
-LaTeX Font Info:    ... okay on input line 43.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 43.
-LaTeX Font Info:    ... okay on input line 43.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 43.
-LaTeX Font Info:    ... okay on input line 43.
-LaTeX Font Info:    Checking defaults for U/ntxexa/m/n on input line 43.
+LaTeX Font Info:    ... okay on input line 52.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 52.
+LaTeX Font Info:    ... okay on input line 52.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 52.
+LaTeX Font Info:    ... okay on input line 52.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 52.
+LaTeX Font Info:    ... okay on input line 52.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 52.
+LaTeX Font Info:    ... okay on input line 52.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 52.
+LaTeX Font Info:    ... okay on input line 52.
+LaTeX Font Info:    Checking defaults for U/ntxexa/m/n on input line 52.
 LaTeX Font Info:    Trying to load font information for U+ntxexa on input line 
-43.
+52.
 
 (C:\Users\Edgar Gomez\AppData\Local\Programs\MiKTeX\tex/latex/newtx\untxexa.fd
 File: untxexa.fd 2012/04/16 Fontinst v1.933 font definitions for U/ntxexa.
 )
-LaTeX Font Info:    ... okay on input line 43.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 43.
-LaTeX Font Info:    ... okay on input line 43.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 43.
-LaTeX Font Info:    ... okay on input line 43.
-LaTeX Font Info:    Checking defaults for LMS/ntxsy/m/n on input line 43.
+LaTeX Font Info:    ... okay on input line 52.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 52.
+LaTeX Font Info:    ... okay on input line 52.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 52.
+LaTeX Font Info:    ... okay on input line 52.
+LaTeX Font Info:    Checking defaults for LMS/ntxsy/m/n on input line 52.
 LaTeX Font Info:    Trying to load font information for LMS+ntxsy on input line
- 43.
+ 52.
 
 (C:\Users\Edgar Gomez\AppData\Local\Programs\MiKTeX\tex/latex/newtx\lmsntxsy.fd
 File: lmsntxsy.fd 2016/07/02 Fontinst v1.933 font definitions for LMS/ntxsy.
 )
-LaTeX Font Info:    ... okay on input line 43.
-LaTeX Font Info:    Checking defaults for LMX/ntxexx/m/n on input line 43.
+LaTeX Font Info:    ... okay on input line 52.
+LaTeX Font Info:    Checking defaults for LMX/ntxexx/m/n on input line 52.
 LaTeX Font Info:    Trying to load font information for LMX+ntxexx on input lin
-e 43.
+e 52.
 
 (C:\Users\Edgar Gomez\AppData\Local\Programs\MiKTeX\tex/latex/newtx\lmxntxexx.f
 d
 File: lmxntxexx.fd 2016/07/03 Fontinst v1.933 font definitions for LMX/ntxexx.
 )
-LaTeX Font Info:    ... okay on input line 43.
+LaTeX Font Info:    ... okay on input line 52.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 8.0pt on input line 43.
+(Font)              scaled to size 8.0pt on input line 52.
 LaTeX Font Info:    Trying to load font information for OT1+LinuxLibertineT-TLF
- on input line 43.
+ on input line 52.
 
 (C:\Users\Edgar Gomez\AppData\Local\Programs\MiKTeX\tex/latex/libertine\ot1linu
 xlibertinet-tlf.fd
@@ -966,124 +1020,124 @@ File: OT1LinuxLibertineT-TLF.fd 2017/03/20 (autoinst) Font definitions for OT1/
 LinuxLibertineT-TLF.
 )
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 8.0pt on input line 43.
+(Font)              scaled to size 8.0pt on input line 52.
 <<ot1.cmap>>
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 6.0pt on input line 43.
+(Font)              scaled to size 6.0pt on input line 52.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 5.5pt on input line 43.
+(Font)              scaled to size 5.5pt on input line 52.
 LaTeX Font Info:    Font shape `OML/nxlmi/m/it' will be
-(Font)              scaled to size 8.0pt on input line 43.
+(Font)              scaled to size 8.0pt on input line 52.
 <<oml.cmap>>
 LaTeX Font Info:    Font shape `OML/nxlmi/m/it' will be
-(Font)              scaled to size 6.0pt on input line 43.
+(Font)              scaled to size 6.0pt on input line 52.
 LaTeX Font Info:    Font shape `OML/nxlmi/m/it' will be
-(Font)              scaled to size 5.5pt on input line 43.
+(Font)              scaled to size 5.5pt on input line 52.
 LaTeX Font Info:    Font shape `LMS/ntxsy/m/n' will be
-(Font)              scaled to size 8.0pt on input line 43.
+(Font)              scaled to size 8.0pt on input line 52.
 LaTeX Font Info:    Font shape `LMS/ntxsy/m/n' will be
-(Font)              scaled to size 6.0pt on input line 43.
+(Font)              scaled to size 6.0pt on input line 52.
 LaTeX Font Info:    Font shape `LMS/ntxsy/m/n' will be
-(Font)              scaled to size 5.5pt on input line 43.
+(Font)              scaled to size 5.5pt on input line 52.
 LaTeX Font Info:    Font shape `LMX/ntxexx/m/n' will be
-(Font)              scaled to size 8.0pt on input line 43.
+(Font)              scaled to size 8.0pt on input line 52.
 LaTeX Font Info:    Font shape `LMX/ntxexx/m/n' will be
-(Font)              scaled to size 6.0pt on input line 43.
+(Font)              scaled to size 6.0pt on input line 52.
 LaTeX Font Info:    Font shape `LMX/ntxexx/m/n' will be
-(Font)              scaled to size 5.5pt on input line 43.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 43.
+(Font)              scaled to size 5.5pt on input line 52.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 52.
 
 
 (C:\Users\Edgar Gomez\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 43.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 52.
 
 (C:\Users\Edgar Gomez\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 LaTeX Font Info:    Trying to load font information for U+ntxmia on input line 
-43.
+52.
 (C:\Users\Edgar Gomez\AppData\Local\Programs\MiKTeX\tex/latex/newtx\untxmia.fd
 File: untxmia.fd 2024/04/09 Fontinst v1.933 font definitions for U/ntxmia.
 )
 LaTeX Font Info:    Font shape `U/ntxmia/m/it' will be
-(Font)              scaled to size 8.0pt on input line 43.
+(Font)              scaled to size 8.0pt on input line 52.
 LaTeX Font Info:    Font shape `U/ntxmia/m/it' will be
-(Font)              scaled to size 6.0pt on input line 43.
+(Font)              scaled to size 6.0pt on input line 52.
 LaTeX Font Info:    Font shape `U/ntxmia/m/it' will be
-(Font)              scaled to size 5.5pt on input line 43.
+(Font)              scaled to size 5.5pt on input line 52.
 LaTeX Font Info:    Trying to load font information for U+ntxsym on input line 
-43.
+52.
 (C:\Users\Edgar Gomez\AppData\Local\Programs\MiKTeX\tex/latex/newtx\untxsym.fd
 File: untxsym.fd 2023/08/16 Fontinst v1.933 font definitions for U/ntxsym.
 )
 LaTeX Font Info:    Font shape `U/ntxsym/m/n' will be
-(Font)              scaled to size 8.0pt on input line 43.
+(Font)              scaled to size 8.0pt on input line 52.
 LaTeX Font Info:    Font shape `U/ntxsym/m/n' will be
-(Font)              scaled to size 6.0pt on input line 43.
+(Font)              scaled to size 6.0pt on input line 52.
 LaTeX Font Info:    Font shape `U/ntxsym/m/n' will be
-(Font)              scaled to size 5.5pt on input line 43.
+(Font)              scaled to size 5.5pt on input line 52.
 LaTeX Font Info:    Trying to load font information for U+ntxsyc on input line 
-43.
+52.
 (C:\Users\Edgar Gomez\AppData\Local\Programs\MiKTeX\tex/latex/newtx\untxsyc.fd
 File: untxsyc.fd 2012/04/12 Fontinst v1.933 font definitions for U/ntxsyc.
 )
 LaTeX Font Info:    Font shape `U/ntxsyc/m/n' will be
-(Font)              scaled to size 8.0pt on input line 43.
+(Font)              scaled to size 8.0pt on input line 52.
 LaTeX Font Info:    Font shape `U/ntxsyc/m/n' will be
-(Font)              scaled to size 6.0pt on input line 43.
+(Font)              scaled to size 6.0pt on input line 52.
 LaTeX Font Info:    Font shape `U/ntxsyc/m/n' will be
-(Font)              scaled to size 5.5pt on input line 43.
+(Font)              scaled to size 5.5pt on input line 52.
 LaTeX Font Info:    Font shape `U/ntxexa/m/n' will be
-(Font)              scaled to size 8.0pt on input line 43.
+(Font)              scaled to size 8.0pt on input line 52.
 LaTeX Font Info:    Font shape `U/ntxexa/m/n' will be
-(Font)              scaled to size 6.0pt on input line 43.
+(Font)              scaled to size 6.0pt on input line 52.
 LaTeX Font Info:    Font shape `U/ntxexa/m/n' will be
-(Font)              scaled to size 5.5pt on input line 43.
+(Font)              scaled to size 5.5pt on input line 52.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/it' will be
-(Font)              scaled to size 10.0pt on input line 43.
+(Font)              scaled to size 10.0pt on input line 52.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 10.0pt on input line 43.
+(Font)              scaled to size 10.0pt on input line 52.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 7.3pt on input line 43.
+(Font)              scaled to size 7.3pt on input line 52.
 LaTeX Font Info:    Font shape `OML/nxlmi/m/it' will be
-(Font)              scaled to size 10.0pt on input line 43.
+(Font)              scaled to size 10.0pt on input line 52.
 LaTeX Font Info:    Font shape `OML/nxlmi/m/it' will be
-(Font)              scaled to size 7.3pt on input line 43.
+(Font)              scaled to size 7.3pt on input line 52.
 LaTeX Font Info:    Font shape `LMS/ntxsy/m/n' will be
-(Font)              scaled to size 10.0pt on input line 43.
+(Font)              scaled to size 10.0pt on input line 52.
 LaTeX Font Info:    Font shape `LMS/ntxsy/m/n' will be
-(Font)              scaled to size 7.3pt on input line 43.
+(Font)              scaled to size 7.3pt on input line 52.
 LaTeX Font Info:    Font shape `LMX/ntxexx/m/n' will be
-(Font)              scaled to size 10.0pt on input line 43.
+(Font)              scaled to size 10.0pt on input line 52.
 LaTeX Font Info:    Font shape `LMX/ntxexx/m/n' will be
-(Font)              scaled to size 7.3pt on input line 43.
+(Font)              scaled to size 7.3pt on input line 52.
 LaTeX Font Info:    Font shape `U/ntxmia/m/it' will be
-(Font)              scaled to size 10.0pt on input line 43.
+(Font)              scaled to size 10.0pt on input line 52.
 LaTeX Font Info:    Font shape `U/ntxmia/m/it' will be
-(Font)              scaled to size 7.3pt on input line 43.
+(Font)              scaled to size 7.3pt on input line 52.
 LaTeX Font Info:    Font shape `U/ntxsym/m/n' will be
-(Font)              scaled to size 10.0pt on input line 43.
+(Font)              scaled to size 10.0pt on input line 52.
 LaTeX Font Info:    Font shape `U/ntxsym/m/n' will be
-(Font)              scaled to size 7.3pt on input line 43.
+(Font)              scaled to size 7.3pt on input line 52.
 LaTeX Font Info:    Font shape `U/ntxsyc/m/n' will be
-(Font)              scaled to size 10.0pt on input line 43.
+(Font)              scaled to size 10.0pt on input line 52.
 LaTeX Font Info:    Font shape `U/ntxsyc/m/n' will be
-(Font)              scaled to size 7.3pt on input line 43.
+(Font)              scaled to size 7.3pt on input line 52.
 LaTeX Font Info:    Font shape `U/ntxexa/m/n' will be
-(Font)              scaled to size 10.0pt on input line 43.
+(Font)              scaled to size 10.0pt on input line 52.
 LaTeX Font Info:    Font shape `U/ntxexa/m/n' will be
-(Font)              scaled to size 7.3pt on input line 43.
-LaTeX Info: Command `\dddot' is already robust on input line 43.
-LaTeX Info: Command `\ddddot' is already robust on input line 43.
-LaTeX Info: Redefining \microtypecontext on input line 43.
-Package microtype Info: Applying patch `item' on input line 43.
-Package microtype Info: Applying patch `toc' on input line 43.
-Package microtype Info: Applying patch `eqnum' on input line 43.
-Package microtype Info: Applying patch `footnote' on input line 43.
-Package microtype Info: Applying patch `verbatim' on input line 43.
-LaTeX Info: Redefining \microtypesetup on input line 43.
+(Font)              scaled to size 7.3pt on input line 52.
+LaTeX Info: Command `\dddot' is already robust on input line 52.
+LaTeX Info: Command `\ddddot' is already robust on input line 52.
+LaTeX Info: Redefining \microtypecontext on input line 52.
+Package microtype Info: Applying patch `item' on input line 52.
+Package microtype Info: Applying patch `toc' on input line 52.
+Package microtype Info: Applying patch `eqnum' on input line 52.
+Package microtype Info: Applying patch `footnote' on input line 52.
+Package microtype Info: Applying patch `verbatim' on input line 52.
+LaTeX Info: Redefining \microtypesetup on input line 52.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
@@ -1098,26 +1152,26 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `LinuxLibertineT-TLF' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
-Package hyperref Info: Link coloring ON on input line 43.
-(Tarea4.out) (Tarea4.out)
+Package hyperref Info: Link coloring ON on input line 52.
+(chatBasico.out) (chatBasico.out)
 \@outlinefile=\write4
-\openout4 = `Tarea4.out'.
+\openout4 = `chatBasico.out'.
 
 
 (C:\Users\Edgar Gomez\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-
 pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count344
-\scratchdimen=\dimen264
-\scratchbox=\box71
-\nofMPsegments=\count345
-\nofMParguments=\count346
-\everyMPshowfont=\toks42
-\MPscratchCnt=\count347
-\MPscratchDim=\dimen265
-\MPnumerator=\count348
-\makeMPintoPDFobject=\count349
-\everyMPtoPDFconversion=\toks43
+\scratchcounter=\count356
+\scratchdimen=\dimen268
+\scratchbox=\box73
+\nofMPsegments=\count357
+\nofMParguments=\count358
+\everyMPshowfont=\toks43
+\MPscratchCnt=\count359
+\MPscratchDim=\dimen269
+\MPnumerator=\count360
+\makeMPintoPDFobject=\count361
+\everyMPtoPDFconversion=\toks44
 )
 (C:\Users\Edgar Gomez\AppData\Local\Programs\MiKTeX\tex/latex/epstopdf-pkg\epst
 opdf-base.sty
@@ -1163,8 +1217,8 @@ File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-\c@mv@tabular=\count350
-\c@mv@boldtabular=\count351
+\c@mv@tabular=\count362
+\c@mv@boldtabular=\count363
 
 (C:\Users\Edgar Gomez\AppData\Local\Programs\MiKTeX\tex/latex/upquote\upquote.s
 ty
@@ -1173,13 +1227,15 @@ tim
 )
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: float package is loaded.
+Package caption Info: listings package is loaded.
 Package caption Info: End \AtBeginDocument code.
-LaTeX Info: Redefining \. on input line 43.
-LaTeX Info: Redefining \% on input line 43.
+LaTeX Info: Redefining \. on input line 52.
+LaTeX Info: Redefining \% on input line 52.
+\c@lstlisting=\count364
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 14.4pt on input line 64.
+(Font)              scaled to size 14.4pt on input line 73.
 LaTeX Font Info:    Trying to load font information for T1+LinuxBiolinumT-TLF o
-n input line 64.
+n input line 73.
 
 (C:\Users\Edgar Gomez\AppData\Local\Programs\MiKTeX\tex/latex/libertine\t1linux
 biolinumt-tlf.fd
@@ -1187,19 +1243,19 @@ File: T1LinuxBiolinumT-TLF.fd 2017/03/20 (autoinst) Font definitions for T1/Lin
 uxBiolinumT-TLF.
 )
 LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
-(Font)              scaled to size 14.4pt on input line 64.
+(Font)              scaled to size 14.4pt on input line 73.
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `LinuxBiolinumT-TLF' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/b/n' will be
-(Font)              scaled to size 14.4pt on input line 64.
+(Font)              scaled to size 14.4pt on input line 73.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 12.0pt on input line 64.
+(Font)              scaled to size 12.0pt on input line 73.
 LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
-(Font)              scaled to size 12.0pt on input line 64.
+(Font)              scaled to size 12.0pt on input line 73.
 LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
-(Font)              scaled to size 10.0pt on input line 64.
+(Font)              scaled to size 10.0pt on input line 73.
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `LinuxLibertineT-TLF' (encoding: OT1).
 (microtype)             For optimal results, create family-specific settings.
@@ -1214,9 +1270,9 @@ cfg
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 )
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 9.0pt on input line 64.
+(Font)              scaled to size 9.0pt on input line 73.
 LaTeX Font Info:    Trying to load font information for TS1+LinuxLibertineT-TLF
- on input line 64.
+ on input line 73.
 
 (C:\Users\Edgar Gomez\AppData\Local\Programs\MiKTeX\tex/latex/libertine\ts1linu
 xlibertinet-tlf.fd
@@ -1224,77 +1280,67 @@ File: TS1LinuxLibertineT-TLF.fd 2017/03/20 (autoinst) Font definitions for TS1/
 LinuxLibertineT-TLF.
 )
 LaTeX Font Info:    Font shape `TS1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 9.0pt on input line 64.
+(Font)              scaled to size 9.0pt on input line 73.
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `LinuxLibertineT-TLF' (encoding: TS1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/n' will be
-(Font)              scaled to size 9.0pt on input line 64.
+(Font)              scaled to size 9.0pt on input line 73.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 9.0pt on input line 64.
+(Font)              scaled to size 9.0pt on input line 73.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 6.6pt on input line 64.
+(Font)              scaled to size 6.6pt on input line 73.
 LaTeX Font Info:    Font shape `OML/nxlmi/m/it' will be
-(Font)              scaled to size 9.0pt on input line 64.
+(Font)              scaled to size 9.0pt on input line 73.
 LaTeX Font Info:    Font shape `OML/nxlmi/m/it' will be
-(Font)              scaled to size 6.6pt on input line 64.
+(Font)              scaled to size 6.6pt on input line 73.
 LaTeX Font Info:    Font shape `LMS/ntxsy/m/n' will be
-(Font)              scaled to size 9.0pt on input line 64.
+(Font)              scaled to size 9.0pt on input line 73.
 LaTeX Font Info:    Font shape `LMS/ntxsy/m/n' will be
-(Font)              scaled to size 6.6pt on input line 64.
+(Font)              scaled to size 6.6pt on input line 73.
 LaTeX Font Info:    Font shape `LMX/ntxexx/m/n' will be
-(Font)              scaled to size 9.0pt on input line 64.
+(Font)              scaled to size 9.0pt on input line 73.
 LaTeX Font Info:    Font shape `LMX/ntxexx/m/n' will be
-(Font)              scaled to size 6.6pt on input line 64.
+(Font)              scaled to size 6.6pt on input line 73.
 LaTeX Font Info:    Font shape `U/ntxmia/m/it' will be
-(Font)              scaled to size 9.0pt on input line 64.
+(Font)              scaled to size 9.0pt on input line 73.
 LaTeX Font Info:    Font shape `U/ntxmia/m/it' will be
-(Font)              scaled to size 6.6pt on input line 64.
+(Font)              scaled to size 6.6pt on input line 73.
 LaTeX Font Info:    Font shape `U/ntxsym/m/n' will be
-(Font)              scaled to size 9.0pt on input line 64.
+(Font)              scaled to size 9.0pt on input line 73.
 LaTeX Font Info:    Font shape `U/ntxsym/m/n' will be
-(Font)              scaled to size 6.6pt on input line 64.
+(Font)              scaled to size 6.6pt on input line 73.
 LaTeX Font Info:    Font shape `U/ntxsyc/m/n' will be
-(Font)              scaled to size 9.0pt on input line 64.
+(Font)              scaled to size 9.0pt on input line 73.
 LaTeX Font Info:    Font shape `U/ntxsyc/m/n' will be
-(Font)              scaled to size 6.6pt on input line 64.
+(Font)              scaled to size 6.6pt on input line 73.
 LaTeX Font Info:    Font shape `U/ntxexa/m/n' will be
-(Font)              scaled to size 9.0pt on input line 64.
+(Font)              scaled to size 9.0pt on input line 73.
 LaTeX Font Info:    Font shape `U/ntxexa/m/n' will be
-(Font)              scaled to size 6.6pt on input line 64.
+(Font)              scaled to size 6.6pt on input line 73.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/it' will be
-(Font)              scaled to size 9.0pt on input line 64.
+(Font)              scaled to size 9.0pt on input line 73.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\CCS@General@Organizaci\80\363n de sistemas
- inform\80\341ticos' on input line 64.
+ inform\80\341ticos' on input line 73.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\CCS@Punctuation@Organizaci\80\363n de sist
-emas inform\80\341ticos' on input line 64.
+emas inform\80\341ticos' on input line 73.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\CCS@Specific@Organizaci\80\363n de sistema
-s inform\80\341ticos' on input line 64.
+s inform\80\341ticos' on input line 73.
 
 LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
-(Font)              scaled to size 10.95pt on input line 66.
-LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/n' will be
-(Font)              scaled to size 10.0pt on input line 73.
-<sincrono.png, id=41, 317.38576pt x 169.8345pt>
-File: sincrono.png Graphic file (type png)
-<use sincrono.png>
-Package pdftex.def Info: sincrono.png  used on input line 87.
-(pdftex.def)             Requested size: 316.60512pt x 169.42203pt.
-LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
-(Font)              scaled to size 9.0pt on input line 88.
-
-Class acmart Warning: A possible image without description on input line 90.
-
+(Font)              scaled to size 10.95pt on input line 75.
+LaTeX Font Info:    Font shape `TS1/LinuxLibertineT-TLF/m/n' will be
+(Font)              scaled to size 10.0pt on input line 86.
 [1.1{C:/Users/Edgar Gomez/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/
 Users/Edgar Gomez/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/libertine/lbtn_
 25tcsq.enc}{C:/Users/Edgar Gomez/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/
@@ -1302,19 +1348,31 @@ libertine/lbtn_76gpa5.enc}{C:/Users/Edgar Gomez/AppData/Local/Programs/MiKTeX/f
 onts/enc/dvips/libertine/lbtn_naooyc.enc}{C:/Users/Edgar Gomez/AppData/Local/Pr
 ograms/MiKTeX/fonts/enc/dvips/libertine/lbtn_nh77jq.enc}{C:/Users/Edgar Gomez/A
 ppData/Local/Programs/MiKTeX/fonts/enc/dvips/libertine/lbtn_7grukw.enc}]
-<asincrono.png, id=62, 447.47176pt x 205.36725pt>
-File: asincrono.png Graphic file (type png)
-<use asincrono.png>
-Package pdftex.def Info: asincrono.png  used on input line 99.
-(pdftex.def)             Requested size: 316.60512pt x 145.30411pt.
+LaTeX Font Info:    Trying to load font information for T1+zi4 on input line 12
+1.
 
-
-Class acmart Warning: A possible image without description on input line 102.
-
+(C:\Users\Edgar Gomez\AppData\Local\Programs\MiKTeX\tex/latex/inconsolata\t1zi4
+.fd
+File: t1zi4.fd 2018/01/14 T1/zi4 (Inconsolata)
+)
+LaTeX Font Info:    Font shape `T1/zi4/m/n' will be
+(Font)              scaled to size 10.0pt on input line 121.
+Package microtype Info: Loading generic protrusion settings for font family
+(microtype)             `zi4' (encoding: T1).
+(microtype)             For optimal results, create family-specific settings.
+(microtype)             See the microtype manual for details.
+Package hyperref Info: bookmark level for unknown lstlisting defaults to 0 on i
+nput line 123.
 LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
-(Font)              scaled to size 8.0pt on input line 106.
+(Font)              scaled to size 9.0pt on input line 123.
+LaTeX Font Info:    Font shape `T1/zi4/m/n' will be
+(Font)              scaled to size 9.0pt on input line 123.
+LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
+(Font)              scaled to size 6.0pt on input line 124.
+LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
+(Font)              scaled to size 8.0pt on input line 152.
 LaTeX Font Info:    Trying to load font information for TS1+LinuxBiolinumT-TLF 
-on input line 106.
+on input line 152.
 
 (C:\Users\Edgar Gomez\AppData\Local\Programs\MiKTeX\tex/latex/libertine\ts1linu
 xbiolinumt-tlf.fd
@@ -1322,15 +1380,167 @@ File: TS1LinuxBiolinumT-TLF.fd 2017/03/20 (autoinst) Font definitions for TS1/L
 inuxBiolinumT-TLF.
 )
 LaTeX Font Info:    Font shape `TS1/LinuxBiolinumT-TLF/m/n' will be
-(Font)              scaled to size 8.0pt on input line 106.
+(Font)              scaled to size 8.0pt on input line 152.
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `LinuxBiolinumT-TLF' (encoding: TS1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
  [2.2{C:/Users/Edgar Gomez/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/libert
-ine/lbtn_afusau.enc} <./sincrono.png> <./asincrono.png>]
-LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/it' will be
-(Font)              scaled to size 8.0pt on input line 122.
+ine/lbtn_afusau.enc}{C:/Users/Edgar Gomez/AppData/Local/Programs/MiKTeX/fonts/e
+nc/dvips/inconsolata/i4-t1-4.enc}]
+LaTeX Font Info:    Trying to load font information for TS1+zi4 on input line 2
+01.
+
+(C:\Users\Edgar Gomez\AppData\Local\Programs\MiKTeX\tex/latex/inconsolata\ts1zi
+4.fd
+File: ts1zi4.fd 2018/01/14 TS1/zi4 (Inconsolata)
+)
+LaTeX Font Info:    Font shape `TS1/zi4/m/n' will be
+(Font)              scaled to size 9.0pt on input line 201.
+Package microtype Info: Loading generic protrusion settings for font family
+(microtype)             `zi4' (encoding: TS1).
+(microtype)             For optimal results, create family-specific settings.
+(microtype)             See the microtype manual for details.
+ [3.3{C:/Users/Edgar Gomez/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/incons
+olata/i4-ts1.enc}] [4.4]
+LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/n' will be
+(Font)              scaled to size 10.0pt on input line 298.
+ [5.5] [6.6] [7.7]
+<ejecutamosServidor.png, id=320, 620.91975pt x 28.908pt>
+File: ejecutamosServidor.png Graphic file (type png)
+<use ejecutamosServidor.png>
+Package pdftex.def Info: ejecutamosServidor.png  used on input line 483.
+(pdftex.def)             Requested size: 316.60512pt x 14.74022pt.
+
+
+Class acmart Warning: A possible image without description on input line 486.
+
+[8.8]
+<connecctingClient1.png, id=333, 537.207pt x 84.315pt>
+File: connecctingClient1.png Graphic file (type png)
+<use connecctingClient1.png>
+Package pdftex.def Info: connecctingClient1.png  used on input line 492.
+(pdftex.def)             Requested size: 316.60512pt x 49.69266pt.
+
+
+Class acmart Warning: A possible image without description on input line 495.
+
+<serverSeeFirstClient.png, id=334, 528.17325pt x 61.4295pt>
+File: serverSeeFirstClient.png Graphic file (type png)
+<use serverSeeFirstClient.png>
+Package pdftex.def Info: serverSeeFirstClient.png  used on input line 501.
+(pdftex.def)             Requested size: 316.60512pt x 36.82329pt.
+
+Class acmart Warning: A possible image without description on input line 504.
+
+<connectClient2.png, id=335, 530.58224pt x 91.542pt>
+File: connectClient2.png Graphic file (type png)
+<use connectClient2.png>
+Package pdftex.def Info: connectClient2.png  used on input line 510.
+(pdftex.def)             Requested size: 316.60512pt x 54.6253pt.
+
+Class acmart Warning: A possible image without description on input line 513.
+
+<firstClientSeeNotification ConectionOtherCleints.png, id=336, 531.1845pt x 116
+.23425pt>
+File: firstClientSeeNotification ConectionOtherCleints.png Graphic file (type p
+ng)
+<use firstClientSeeNotification ConectionOtherCleints.png>
+Package pdftex.def Info: firstClientSeeNotification ConectionOtherCleints.png  
+used on input line 519.
+(pdftex.def)             Requested size: 316.60512pt x 69.28171pt.
+
+Class acmart Warning: A possible image without description on input line 522.
+
+<connectClient3.png, id=337, 530.58224pt x 88.53075pt>
+File: connectClient3.png Graphic file (type png)
+<use connectClient3.png>
+Package pdftex.def Info: connectClient3.png  used on input line 528.
+(pdftex.def)             Requested size: 316.60512pt x 52.8284pt.
+
+Class acmart Warning: A possible image without description on input line 531.
+
+[9.9 <./ejecutamosServidor.png> <./connecctingClient1.png> <./serverSeeFirstCli
+ent.png> <./connectClient2.png> <./firstClientSeeNotification ConectionOtherCle
+ints.png>]
+<firstClientSendMessage.png, id=352, 527.571pt x 191.5155pt>
+File: firstClientSendMessage.png Graphic file (type png)
+<use firstClientSendMessage.png>
+Package pdftex.def Info: firstClientSendMessage.png  used on input line 537.
+(pdftex.def)             Requested size: 316.60512pt x 114.93063pt.
+
+
+Class acmart Warning: A possible image without description on input line 540.
+
+<secondClientRecieves.png, id=353, 528.7755pt x 157.7895pt>
+File: secondClientRecieves.png Graphic file (type png)
+<use secondClientRecieves.png>
+Package pdftex.def Info: secondClientRecieves.png  used on input line 546.
+(pdftex.def)             Requested size: 316.60512pt x 94.4794pt.
+
+Class acmart Warning: A possible image without description on input line 549.
+
+<ThirdCleinteRecievers.png, id=354, 542.62724pt x 125.268pt>
+File: ThirdCleinteRecievers.png Graphic file (type png)
+<use ThirdCleinteRecievers.png>
+Package pdftex.def Info: ThirdCleinteRecievers.png  used on input line 555.
+(pdftex.def)             Requested size: 316.60512pt x 73.08937pt.
+
+Class acmart Warning: A possible image without description on input line 558.
+
+[10.10 <./connectClient3.png> <./firstClientSendMessage.png> <./secondClientRec
+ieves.png>]
+<chatPerspetivaLuis.png, id=365, 528.17325pt x 244.5135pt>
+File: chatPerspetivaLuis.png Graphic file (type png)
+<use chatPerspetivaLuis.png>
+Package pdftex.def Info: chatPerspetivaLuis.png  used on input line 564.
+(pdftex.def)             Requested size: 316.60512pt x 146.57118pt.
+
+
+Class acmart Warning: A possible image without description on input line 567.
+
+<chatPerspectivaPedro.png, id=366, 534.798pt x 245.11575pt>
+File: chatPerspectivaPedro.png Graphic file (type png)
+<use chatPerspectivaPedro.png>
+Package pdftex.def Info: chatPerspectivaPedro.png  used on input line 573.
+(pdftex.def)             Requested size: 316.60512pt x 145.11447pt.
+
+Class acmart Warning: A possible image without description on input line 576.
+
+<chatPerspectivaAna.png, id=367, 534.19576pt x 221.628pt>
+File: chatPerspectivaAna.png Graphic file (type png)
+<use chatPerspectivaAna.png>
+Package pdftex.def Info: chatPerspectivaAna.png  used on input line 582.
+(pdftex.def)             Requested size: 316.60512pt x 131.35457pt.
+
+Class acmart Warning: A possible image without description on input line 585.
+
+[11.11 <./ThirdCleinteRecievers.png> <./chatPerspetivaLuis.png> <./chatPerspect
+ivaPedro.png>]
+<anaQuit.png, id=378, 528.17325pt x 245.11575pt>
+File: anaQuit.png Graphic file (type png)
+<use anaQuit.png>
+Package pdftex.def Info: anaQuit.png  used on input line 591.
+(pdftex.def)             Requested size: 316.60512pt x 146.93219pt.
+
+
+Class acmart Warning: A possible image without description on input line 594.
+
+<notificationAnaLeft.png, id=379, 531.78674pt x 280.6485pt>
+File: notificationAnaLeft.png Graphic file (type png)
+<use notificationAnaLeft.png>
+Package pdftex.def Info: notificationAnaLeft.png  used on input line 600.
+(pdftex.def)             Requested size: 316.60512pt x 167.08427pt.
+
+Class acmart Warning: A possible image without description on input line 603.
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [12.12 <./chatPerspectivaAna.png> <./anaQuit.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 607--608
+
+ []
 
 
 Class acmart Warning: Some images may lack descriptions.
@@ -1355,36 +1565,37 @@ File: se-pdfdoc.def 2019/11/29 v1.12 stringenc: PDFDocEncoding
 (C:\Users\Edgar Gomez\AppData\Local\Programs\MiKTeX\tex/generic/stringenc\se-ut
 f8.def
 File: se-utf8.def 2019/11/29 v1.12 stringenc: UTF-8
-) [3.3] (Tarea4.aux
-LaTeX Info: Redefining \. on input line 14.
-LaTeX Info: Redefining \% on input line 14.
+) [13.13 <./notificationAnaLeft.png>] (chatBasico.aux
+LaTeX Info: Redefining \. on input line 12.
+LaTeX Info: Redefining \% on input line 12.
 )
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2025-11-06>
  ***********
-Package rerunfilecheck Info: File `Tarea4.out' has not changed.
-(rerunfilecheck)             Checksum: DEF2E228FBEA3E5438EAE1CD97AF816A;911.
+Package rerunfilecheck Info: File `chatBasico.out' has not changed.
+(rerunfilecheck)             Checksum: 3D10C466A83810C781E15C2B7A97AD0C;4160.
  ) 
 Here is how much of TeX's memory you used:
- 23390 strings out of 467871
- 385314 string characters out of 5415436
- 876199 words of memory out of 5000000
- 51451 multiletter control sequences out of 15000+600000
- 770999 words of font info for 279 fonts, out of 8000000 for 9000
+ 25811 strings out of 467871
+ 421364 string characters out of 5415436
+ 1216845 words of memory out of 5000000
+ 53600 multiletter control sequences out of 15000+600000
+ 773556 words of font info for 294 fonts, out of 8000000 for 9000
  1302 hyphenation exceptions out of 8191
- 90i,12n,131p,1005b,632s stack positions out of 10000i,1000n,20000p,200000b,200000s
-<C:/Users/Edgar Gomez/AppData/Local/Programs/MiKTeX/fonts/type1/public/libert
-ine/LinBiolinumT.pfb><C:/Users/Edgar Gomez/AppData/Local/Programs/MiKTeX/fonts/
-type1/public/libertine/LinBiolinumTB.pfb><C:/Users/Edgar Gomez/AppData/Local/Pr
-ograms/MiKTeX/fonts/type1/public/libertine/LinLibertineT.pfb><C:/Users/Edgar Go
-mez/AppData/Local/Programs/MiKTeX/fonts/type1/public/libertine/LinLibertineTB.p
-fb><C:/Users/Edgar Gomez/AppData/Local/Programs/MiKTeX/fonts/type1/public/liber
-tine/LinLibertineTI.pfb><C:/Users/Edgar Gomez/AppData/Local/Programs/MiKTeX/fon
-ts/type1/public/newtx/txsys.pfb>
-Output written on Tarea4.pdf (3 pages, 393882 bytes).
+ 90i,13n,131p,1009b,2192s stack positions out of 10000i,1000n,20000p,200000b,200000s
+<C:/Users/Edgar Gomez/AppData/Local/Programs/MiKTeX/fonts/type1/public/incons
+olata/Inconsolata-zi4r.pfb><C:/Users/Edgar Gomez/AppData/Local/Programs/MiKTeX/
+fonts/type1/public/libertine/LinBiolinumT.pfb><C:/Users/Edgar Gomez/AppData/Loc
+al/Programs/MiKTeX/fonts/type1/public/libertine/LinBiolinumTB.pfb><C:/Users/Edg
+ar Gomez/AppData/Local/Programs/MiKTeX/fonts/type1/public/libertine/LinLibertin
+eT.pfb><C:/Users/Edgar Gomez/AppData/Local/Programs/MiKTeX/fonts/type1/public/l
+ibertine/LinLibertineTB.pfb><C:/Users/Edgar Gomez/AppData/Local/Programs/MiKTeX
+/fonts/type1/public/libertine/LinLibertineTI.pfb><C:/Users/Edgar Gomez/AppData/
+Local/Programs/MiKTeX/fonts/type1/public/newtx/txsys.pfb>
+Output written on chatBasico.pdf (13 pages, 600915 bytes).
 PDF statistics:
- 122 PDF objects out of 1000 (max. 8388607)
- 20 named destinations out of 1000 (max. 500000)
- 75867 words of extra memory for PDF output out of 89155 (max. 10000000)
+ 492 PDF objects out of 1000 (max. 8388607)
+ 242 named destinations out of 1000 (max. 500000)
+ 85759 words of extra memory for PDF output out of 89155 (max. 10000000)
 

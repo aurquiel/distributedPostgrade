@@ -1,0 +1,615 @@
+\documentclass[acmlarge]{acmart}
+
+\usepackage{booktabs} % For formal tables
+\usepackage{graphicx}
+\usepackage[spanish]{babel}
+\usepackage{amsmath}
+\usepackage{algorithmic}
+\usepackage{listings}
+\usepackage{hyperref} % Paquete necesario
+
+
+\usepackage[ruled]{algorithm2e} % For algorithms
+\renewcommand{\algorithmcfname}{ALGORITHM}
+\SetAlFnt{\small}
+\SetAlCapFnt{\small}
+\SetAlCapNameFnt{\small}
+\SetAlCapHSkip{0pt}
+\IncMargin{-\parindent}
+
+% Metadata Information
+\acmJournal{PACMHCI}
+\acmVolume{1}
+\acmNumber{1}
+\acmArticle{1}
+\acmYear{2026}
+\acmMonth{1}
+\acmArticleSeq{1}
+
+% Copyright
+\setcopyright{none}
+
+\usepackage{xcolor}
+
+\lstset{
+	language=Python,
+	basicstyle=\ttfamily\small,
+	keywordstyle=\color{blue},
+	stringstyle=\color{red},
+	commentstyle=\color{green!50!black},
+	breaklines=true,        % Ajusta automáticamente el texto al ancho de página
+	breakatwhitespace=true, % Corta solo en espacios para no romper palabras
+	showstringspaces=false,
+	numbers=left,           % Opcional: añade números de línea
+	numberstyle=\tiny,
+	frame=single,           % Opcional: añade un marco al código
+	tabsize=4,
+	columns=fullflexible,
+	keepspaces=true        % Mantiene los espacios para la identación
+}
+
+% Document starts
+\begin{document}
+	
+	% Title portion
+	\title{Chat Básico en Python, Sistemas Distribuidos} 
+	\author{GÓMEZ EDGAR}
+	\affiliation{%
+		\institution{Universidad Central de Venezuela}
+		\city{Caracas}
+		\country{Venezuela}}
+	
+	\begin{abstract}
+	Se implementa un sistema de chat distribuido en Python basado en la arquitectura cliente-servidor. El servidor, concurrente, gestiona múltiples conexiones mediante sockets TCP y el uso de hilos, retransmitiendo mensajes a todos los clientes conectados. Cada cliente también emplea hilos para mantener una interfaz responsiva, separando el envío y recepción de mensajes. Se describe el protocolo de comunicación, la estructura de clases y el manejo de conexiones. El trabajo ejemplifica conceptos fundamentales de sistemas distribuidos como concurrencia, comunicación en red y el modelo cliente-servidor.
+	\end{abstract}
+	
+	\ccsdesc[500]{Organización de sistemas informáticos~Sistemas Distribuidos}
+	\ccsdesc[400]{Organización de sistemas informáticos~Cliente Servidor}
+	\ccsdesc[300]{Organización de sistemas informáticos~Concurrencia}
+	\ccsdesc[200]{Organización de sistemas informáticos~Hilos}
+	
+	\keywords{Sistemas Distribuidos, Cliente Servidor, Concurrancia, Hilos}
+	
+	\maketitle
+	
+	\section{Introducción}
+	
+	En este paper abordamos la implementación de un chat básico con un modelo cliente servidor, donde el servidor crea un socket para una conexión bidireccional exponiendo un puerto red de mediante el cual se conecta cada cliente. El servidor usa hilos para evitar que su hilo principal se vea bloqueado mientras maneja otras cargas de trabajo, lo cual le permite siempre estar atento a nuevas conexiones entrantes y el cliente lo usa para que su interfaz sea responsiva al momento de enviar y recibir mensajes.
+
+	\section{Conceptos Claves}
+	
+	Algunos conceptos claves son:
+	
+	\begin{itemize}
+		\item Modelo Cliente Servidor: Es una arquitectura de software que organiza la comunicación y la distribución de tareas entre dos tipos de entidades:
+			\begin{itemize}
+			\item Cliente:
+			 Un programa o proceso que solicita servicios o recursos. Generalmente inicia la comunicación y tiene una interfaz para interactuar con el usuario o con otro sistema.
+			 \item Servidor:
+			 Servidor: Un programa o proceso que provee servicios o recursos a uno o múltiples clientes. Está diseñado para esperar (estar \textquotedbl{}a la escucha\textquotedbl{}) peticiones y responder a ellas.
+			 \item Características clave:
+				 \begin{itemize}
+				 	\item Comunicación asimétrica (el cliente inicia, el servidor responde).
+				 	\item Centralización de la lógica de negocio y los datos en el servidor.
+				 	\item Los clientes suelen ser ligeros y dependen del servidor.
+				 \end{itemize}
+			\end{itemize} 
+		\item Socket:  Es una abstracción software que proporciona una interfaz para enviar y recibir datos a través de la red, utilizando protocolos como TCP o UDP.
+		Funcionamiento básico:
+			\begin{itemize}
+			\item El servidor crea un socket y lo \textquotedbl{}enlaza\textquotedbl{} a un puerto específico para \textquotedbl{}escuchar\textquotedbl{}.
+			\item El cliente crea un socket y se \textquotedbl{}conecta\textquotedbl{} a la dirección IP y puerto del servidor.
+			\item Una vez establecida la conexión, ambos extremos pueden leer y escribir datos a través de sus sockets.
+			\end{itemize} 
+		\item Hilos: Son unidades de ejecución más pequeñas dentro de un proceso. Un proceso puede tener múltiples hilos que se ejecutan de manera concurrente, compartiendo los mismos recursos del proceso (como memoria, archivos abiertos, etc.), pero cada hilo tiene su propia pila de ejecución y contador de programa.
+		Características clave:
+			\begin{itemize}
+			\item Concurrencia: Permiten realizar múltiples tareas aparentemente al mismo tiempo dentro de un mismo programa.
+			\item Comparten memoria: La comunicación entre hilos de un mismo proceso es muy eficiente, pero requiere sincronización para evitar condiciones de carrera.
+			\item Más ligeros que procesos: Crear y cambiar entre hilos tiene menos sobrecarga que crear procesos.
+			\end{itemize} 
+	\end{itemize} 
+
+	En la programación de servidores, es común usar hilos para manejar múltiples clientes simultáneamente. Cuando un servidor acepta una nueva conexión de un cliente a través de un socket, puede crear un hilo dedicado para atender las peticiones de ese cliente específico, permitiendo que el servidor principal siga escuchando nuevas conexiones.
+	
+	En el lado del cliente, los hilos se utilizan principalmente para manejar concurrencia en la interfaz de usuario (UI) y la comunicación en red de manera eficiente.
+	
+	\section{Implementacion del Servidor}
+	
+	\subsection{Estructura de la Clase ChatServer}
+	
+	Usando el paradigma orientado a objetos (POO), codificamos el servidor como una clase llamada \texttt{ChatServer} con su constructor:
+	
+	\begin{lstlisting}[language=Python, caption=Constructor de la clase ChatServer]
+	class ChatServer:
+		def __init__(self, host_ip=socket.gethostbyname(socket.gethostname()), host_port=12345):
+			self.clients_sockets_list = []
+			self.clients_names_list = []
+			self.server_socket = None
+			
+			self.HOST_IP = host_ip
+			self.HOST_PORT = host_port
+			self.ENCODER = "utf-8"
+			self.BUFFER_SIZE = 1024
+	\end{lstlisting}
+	
+	El constructor obtiene la IP del servidor (por defecto la IP local) y el puerto. Se definen las siguientes estructuras de datos:
+	
+	\begin{itemize}
+		\item \texttt{clients\_sockets\_list}: Lista que almacena los sockets de cada cliente conectado.
+		\item \texttt{clients\_names\_list}: Lista que almacena los nombres de los clientes conectados.
+		\item \texttt{server\_socket}: Socket principal del servidor para aceptar conexiones.
+		\item \texttt{HOST\_IP} y \texttt{HOST\_PORT}: Dirección IP y puerto donde el servidor escuchara.
+		\item \texttt{ENCODER}: Codificación utilizada para los mensajes (UTF-8).
+		\item \texttt{BUFFER\_SIZE}: Tamaño del buffer para recibir mensajes (1024 bytes).
+	\end{itemize}
+	
+	\subsection{Inicialización del Socket del Servidor}
+	
+	El método \texttt{startSocketServer()} crea y configura el socket del servidor:
+	
+	\begin{lstlisting}[language=Python, caption=Inicializacion del socket del servidor]
+	def startSocketServer(self):
+		try:
+			# Crear un socket del lado del servidor usando IPV4 (AF_INET) y TCP (SOCK_STREAM)
+			self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+			self.server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+			
+			# Vincular el socket a la IP y puerto definidos
+			self.server_socket.bind((self.HOST_IP, self.HOST_PORT))
+			
+			# Escuchar conexiones entrantes (hasta 10 en cola)
+			self.server_socket.listen(10)
+			print(f"Server listening on {self.HOST_IP}:{self.HOST_PORT}")
+		except Exception as ex:
+			print(f"Socket error: {ex}")
+			if self.server_socket:
+				self.server_socket.close()
+				self.server_socket = None
+			return
+	\end{lstlisting}
+	
+	\begin{itemize}
+		\item \texttt{socket.AF\_INET}: Especifica que se usara IPv4.
+		\item \texttt{socket.SOCK\_STREAM}: Indica que se usara el protocolo TCP (orientado a conexión).
+		\item \texttt{setsockopt(socket.SOL\_SOCKET, socket.SO\_REUSEADDR, 1)}: Permite reutilizar la direccion y puerto inmediatamente despues de cerrar el servidor.
+		\item \texttt{bind()}: Asocia el socket a la direccion IP y puerto especificados.
+		\item \texttt{listen(10)}: Pone al socket en modo escucha, aceptando hasta 10 conexiones en cola.
+	\end{itemize}
+	
+	\subsection{Manejo de Conexiones de Clientes}
+	
+	El metodo \texttt{connect\_client()} es el ciclo principal del servidor que acepta nuevas conexiones:
+	
+	\begin{lstlisting}[language=Python, caption=Aceptacion de conexiones de clientes]
+		def connect_client(self):
+			while True:
+				# Aceptar una conexion entrante
+				client_socket, client_address = self.server_socket.accept()
+				print(f"Connection established with {client_address}...")
+				
+				# Enviar "NAME" para pedir al cliente su nombre
+				name_flag = "NAME"
+				client_socket.send(name_flag.encode(self.ENCODER))
+				client_name = client_socket.recv(self.BUFFER_SIZE).decode(self.ENCODER)
+				
+				# Agregar nuevo socket y nombre del cliente a las listas respectivas
+				self.clients_sockets_list.append(client_socket)
+				self.clients_names_list.append(client_name)
+				
+				# Notificar al servidor, al cliente individual y a todos los clientes
+				print(f"Client '{client_name}' connected.")
+				welcome_message = f"Welcome to the chat, {client_name}!\n"
+				client_socket.send(welcome_message.encode(self.ENCODER))
+				self.broadcast_message(f"{client_name} has joined the chat.\n")
+				
+				# Crear un hilo para recibir mensajes de este cliente
+				recieve_message_thread = threading.Thread(target=self.recieve_message, args=(client_socket,))
+				recieve_message_thread.start()
+	\end{lstlisting}
+	
+	El flujo de aceptación de un cliente es:
+	\begin{enumerate}
+		\item El servidor acepta la conexión mediante \texttt{accept()}, que bloquea hasta que un cliente se conecta.
+		\item Se envía la señal \textquotedbl{}NAME\textquotedbl{} al cliente para solicitar su identificador.
+		\item Se recibe el nombre del cliente y se almacena en las listas.
+		\item Se envía un mensaje de bienvenida al cliente nuevo.
+		\item Se notifica a todos los clientes existentes sobre el nuevo participante.
+		\item Se crea un hilo dedicado para manejar los mensajes entrantes de este cliente.
+	\end{enumerate}
+	
+	\subsection{Retransmisión de Mensajes (Broadcast)}
+	
+	El metodo \texttt{broadcast\_message()} envía un mensaje a todos los clientes conectados:
+	
+	\begin{lstlisting}[language=Python, caption=Envio de mensajes a todos los clientes]
+		def broadcast_message(self, message):
+			for client_socket in self.clients_sockets_list:
+				try:
+					client_socket.send(message.encode(self.ENCODER))
+				except Exception as ex:
+					print(f"Socket error: {ex}")
+					# Si hay error, remover al cliente
+					client_index = self.clients_sockets_list.index(client_socket)
+					client_name = self.clients_names_list[client_index]
+					self.clients_sockets_list.remove(client_socket)
+					self.clients_names_list.remove(client_name)
+					client_socket.close()
+					self.broadcast_message(f"{client_name} has left the chat.\n")
+	\end{lstlisting}
+	
+	Este método itera sobre todos los sockets de clientes y envia el mensaje a cada uno. Si falla el envio a un cliente especifico, se asume que se desconecto y se procede a:
+	\begin{enumerate}
+		\item Remover su socket y nombre de las listas.
+		\item Cerrar su socket.
+		\item Notificar a los demas clientes sobre su salida.
+	\end{enumerate}
+	
+	\subsection{Recepción de Mensajes de un Cliente}
+	
+	Cada cliente tiene un hilo dedicado que ejecuta \texttt{recieve\_message()}:
+	
+	\begin{lstlisting}[language=Python, caption=Recepcion de mensajes de un cliente especifico]
+		def recieve_message(self, client_socket):
+			while True:
+				try:
+					message = client_socket.recv(self.BUFFER_SIZE).decode(self.ENCODER)
+					if message == "QUIT":
+						# Cliente solicita salir
+						client_index = self.clients_sockets_list.index(client_socket)
+						client_name = self.clients_names_list[client_index]
+						self.clients_sockets_list.remove(client_socket)
+						self.clients_names_list.remove(client_name)
+						client_socket.close()
+						self.broadcast_message(f"{client_name} has left the chat.\n")
+						break
+					else:
+						# Retransmitir mensaje a todos los clientes
+						client_index = self.clients_sockets_list.index(client_socket)
+						client_name = self.clients_names_list[client_index]
+						full_message = f"{client_name}: {message}"
+						print(full_message)
+						self.broadcast_message(full_message)
+				except Exception as ex:
+					print(f"Socket error: {ex}")
+					# Manejo de desconexion inesperada
+					client_index = self.clients_sockets_list.index(client_socket)
+					client_name = self.clients_names_list[client_index]
+					self.clients_sockets_list.remove(client_socket)
+					self.clients_names_list.remove(client_name)
+					client_socket.close()
+					self.broadcast_message(f"{client_name} has left the chat.\n")
+					break
+	\end{lstlisting}
+	
+	Este metodo se ejecuta en un bucle infinito dentro de un hilo dedicado por cliente:
+	\begin{itemize}
+		\item Recibe mensajes del cliente mediante \texttt{recv()}.
+		\item Si el mensaje es \textquotedbl{}QUIT\textquotedbl{}, procede a desconectar al cliente de manera ordenada.
+		\item Si es un mensaje normal, lo formatea con el nombre del cliente y lo retransmite a todos.
+		\item Captura excepciones para manejar desconexiones abruptas.
+	\end{itemize}
+	
+	\subsection{Hilos en el Servidor}
+	
+	El servidor utiliza hilos de dos maneras principales:
+	
+	\begin{enumerate}
+		\item \textbf{Hilo principal}: Ejecuta \texttt{connect\_client()} en un bucle infinito, aceptando nuevas conexiones.
+		\item \textbf{Hilos secundarios}: Uno por cada cliente conectado, ejecutando \texttt{recieve\_message()} para manejar los mensajes entrantes de ese cliente especifico.
+	\end{enumerate}
+	
+	Esta arquitectura permite que el servidor:
+	\begin{itemize}
+		\item Acepte multiples clientes simultaneamente.
+		\item Mantenga comunicación bidireccional con cada cliente.
+		\item Sea escalable hasta el limite de recursos del sistema.
+		\item Mantenga responsividad incluso con muchos clientes conectados.
+	\end{itemize}
+	
+	\section{Implementación del Cliente}
+	
+	\subsection{Estructura de la Clase ChatClient}
+	
+	El cliente tambien se implementa como una clase orientada a objetos:
+	
+	\begin{lstlisting}[language=Python, caption=Constructor de la clase ChatClient]
+		class ChatClient:
+			def __init__(self, host_ip, host_port=12345):
+				self.client_socket = None
+				self.client_name = None
+				
+				self.HOST_IP = host_ip
+				self.HOST_PORT = host_port
+				self.ENCODER = "utf-8"
+				self.BUFFER_SIZE = 1024
+	\end{lstlisting}
+	
+	\begin{itemize}
+		\item \texttt{client\_socket}: Socket para la comunicación con el servidor.
+		\item \texttt{client\_name}: Nombre identificador del cliente en el chat.
+		\item Los demas parámetros son consistentes con los del servidor para asegurar compatibilidad.
+	\end{itemize}
+	
+	\subsection{Conexión al Servidor}
+	
+	El método \texttt{start()} maneja la conexion inicial y la configuración de hilos:
+	
+	\begin{lstlisting}[language=Python, caption=Conexion inicial del cliente al servidor]
+		def start(self):
+			try:
+				self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+				self.client_socket.connect((self.HOST_IP, self.HOST_PORT))
+				
+				# Handshake de nombre antes de lanzar hilos
+				first_msg = self.client_socket.recv(self.BUFFER_SIZE).decode(self.ENCODER)
+				if first_msg == "NAME":
+				self.client_name = input("Enter your name: ")
+				self.client_socket.send(self.client_name.encode(self.ENCODER))
+				
+				# Crear hilos para enviar y recibir mensajes concurrentemente
+				recieve_thread = threading.Thread(target=self.recieve_message, daemon=True)
+				send_thread = threading.Thread(target=self.send_message, daemon=True)
+				recieve_thread.start()
+				send_thread.start()
+				
+				recieve_thread.join()
+				send_thread.join()
+			except Exception as ex:
+				print(f"Socket error: {ex}")
+				if self.client_socket:
+				self.client_socket.close()
+				return
+	\end{lstlisting}
+	
+	El proceso de conexión incluye:
+	\begin{enumerate}
+		\item Crear un socket y conectarse al servidor.
+		\item Realizar el \textquotedbl{}handshake\textquotedbl{} de nombre: recibir la senal \textquotedbl{}NAME\textquotedbl{}, enviar el nombre.
+		\item Crear dos hilos: uno para recibir mensajes y otro para enviarlos.
+		\item Marcar los hilos como "daemon" para que terminen cuando el programa principal termine.
+		\item Esperar a que ambos hilos terminen (aunque en teoria se ejecutan indefinidamente).
+	\end{enumerate}
+	
+	\subsection{Envio de Mensajes}
+	
+	El método \texttt{send\_message()} se ejecuta en un hilo separado:
+	
+	\begin{lstlisting}[language=Python, caption=Envio de mensajes del cliente]
+		def send_message(self):
+			while True:
+				message = input()
+				try:
+					self.client_socket.send(message.encode(self.ENCODER))
+				except Exception as ex:
+					print(f"Socket error: {ex}")
+					if self.client_socket:
+					self.client_socket.close()
+					break
+	\end{lstlisting}
+	
+	\begin{itemize}
+		\item Lee entrada del usuario mediante \texttt{input()}.
+		\item Envía el mensaje al servidor mediante el socket.
+		\item Maneja excepciones por desconexión del servidor.
+	\end{itemize}
+	
+	\subsection{Recepción de Mensajes}
+	
+	El mótodo \texttt{recieve\_message()} tambien se ejecuta en un hilo separado:
+	
+	\begin{lstlisting}[language=Python, caption=Recepcion de mensajes del cliente]
+		def recieve_message(self):
+			while True:
+				try:
+					data = self.client_socket.recv(self.BUFFER_SIZE)
+					if not data:
+						print("Servidor cerro la conexion.")
+						break
+					message = data.decode(self.ENCODER)
+					if message != "NAME":  # Ya manejado en start()
+						print(message)
+				except Exception as ex:
+					print(f"Socket error: {ex}")
+					if self.client_socket:
+						self.client_socket.close()
+						break
+	\end{lstlisting}
+	
+	\begin{itemize}
+		\item Recibe datos del servidor mediante \texttt{recv()}.
+		\item Si no hay datos (socket cerrado), termina el bucle.
+		\item Decodifica y muestra el mensaje (excepto la senal \textquotedbl{}NAME\textquotedbl{} ya procesada).
+		\item Maneja excepciones por problemas de conexión.
+	\end{itemize}
+	
+	\subsection{Hilos en el Cliente}
+	
+	El cliente utiliza dos hilos principales:
+	
+	\begin{enumerate}
+		\item \textbf{Hilo de recepción}: Escucha constantemente mensajes del servidor y los muestra al usuario. Este hilo evita que el programa se bloquee esperando mensajes entrantes.
+		\item \textbf{Hilo de envio}: Permite al usuario escribir mensajes en cualquier momento, independientemente de si esta recibiendo mensajes o no.
+	\end{enumerate}
+	
+	Esta separación es crucial para una experiencia de usuario fluida, ya que permite:
+	\begin{itemize}
+		\item Recibir mensajes en tiempo real mientras se escribe.
+		\item No bloquear la interfaz durante operaciones de red.
+		\item Mantener responsividad incluso con alta actividad en el chat.
+	\end{itemize}
+	
+	\section{Protocolo de Comunicación}
+	
+	El sistema implementa un protocolo simple pero efectivo:
+	
+	\begin{enumerate}
+		\item \textbf{Conexión inicial}: El cliente se conecta al servidor.
+		\item \textbf{Handshake de nombre}: 
+		\begin{itemize}
+			\item Servidor -> Cliente: Envia \textquotedbl{}NAME\textquotedbl{}
+			\item Cliente -> Servidor: Envia nombre del usuario
+			\item Servidor -> Cliente: Envia mensaje de bienvenida personalizado
+			\item Servidor -> Todos: Anuncia la nueva conexion
+		\end{itemize}
+		\item \textbf{Comunicación normal}:
+		\begin{itemize}
+			\item Cliente -> Servidor: Mensaje de texto
+			\item Servidor -> Todos: Retransmite mensaje con formato \textquotedbl{}Nombre: mensaje\textquotedbl{}
+		\end{itemize}
+		\item \textbf{Desconexión}:
+		\begin{itemize}
+			\item Cliente -> Servidor: Envia \textquotedbl{}QUIT\textquotedbl{} para desconexión ordenada
+			\item O: Se detecta error de socket por desconexión abrupta
+			\item Servidor -> Todos: Anuncia la salida del usuario
+		\end{itemize}
+	\end{enumerate}
+	
+	\section{Ventajas de la Implementación}
+	
+	\begin{itemize}
+		\item \textbf{Concurrencia}: El uso de hilos permite manejar multiples clientes eficientemente.
+		\item \textbf{Modularidad}: La separación en clases facilita el mantenimiento y la extensión.
+		\item \textbf{Robustez}: Manejo de excepciones para conexiones interrumpidas.
+		\item \textbf{Escalabilidad}: La arquitectura permite anadir mas funcionalidades facilmente.
+	\end{itemize}
+	
+	\section{Ejecución del Chat Básico}
+	
+	Ejecutamos el servidor, donde podemos ver la IP del servidor y el puerto Fig 1.
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\linewidth]{ejecutamosServidor}
+		\caption{}
+		\label{fig:ejecutamosservidor}
+	\end{figure}
+	
+	Conectamos el primer cliente ingresando la IP del servidor y el puerto conjuntamente con el alias del cliente, es este caso \textquotedbl{}Luis\textquotedbl{}, Fig 2.
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\linewidth]{connecctingClient1}
+		\caption{}
+		\label{fig:connecctingclient1}
+	\end{figure}
+	
+	En este momento el servidor muestra todas las interacciones en el chat, muestra que \textquotedbl{}Luis\textquotedbl{} se ha conectado, Fig 3.
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\linewidth]{serverSeeFirstClient}
+		\caption{}
+		\label{fig:serverseefirstclient}
+	\end{figure}
+	
+	Conectamos el segundo cliente ingresando la IP del servidor y el puerto conjuntamente con el alias del cliente, es este caso \textquotedbl{}Pedro\textquotedbl{}, Fig 4.
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\linewidth]{connectClient2}
+		\caption{}
+		\label{fig:connectclient2}
+	\end{figure}
+	
+	Ahora \textquotedbl{}Luis\textquotedbl{} ve la notificacion de que \textquotedbl{}Pedro\textquotedbl{} se ha unido al chat, Fig 5.
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\linewidth]{"firstClientSeeNotification ConectionOtherCleints"}
+		\caption{}
+		\label{fig:firstclientseenotification-conectionothercleints}
+	\end{figure}
+	
+	Conectamos el tercer cliente ingresando la IP del servidor y el puerto conjuntamente con el alias del cliente, es este caso \textquotedbl{}Ana\textquotedbl{}, Fig 6.
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\linewidth]{connectClient3}
+		\caption{}
+		\label{fig:connectclient3}
+	\end{figure}
+	
+	Ahora \textquotedbl{}Luis\textquotedbl{} envia un mensaje, Fig 7. 
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\linewidth]{firstClientSendMessage}
+		\caption{}
+		\label{fig:firstclientsendmessage}
+	\end{figure}
+	
+	El mensaje es recibido por \textquotedbl{}Pedro\textquotedbl{}, Fig 8.
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\linewidth]{secondClientRecieves}
+		\caption{}
+		\label{fig:secondclientrecieves}
+	\end{figure}
+	
+	El mensaje es recibido por \textquotedbl{}Ana\textquotedbl{}, Fig 9.
+
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\linewidth]{ThirdCleinteRecievers}
+		\caption{}
+		\label{fig:thirdcleinterecievers}
+	\end{figure}
+	
+	Ya establecido se desarrolla una conversacion mas larga donde podemos ver desde la perspectiva de \textquotedbl{}Luis\textquotedbl{}. Fig 10.
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\linewidth]{chatPerspetivaLuis}
+		\caption{}
+		\label{fig:chatperspetivaluis}
+	\end{figure}
+	
+	Chat desde la perspectiva de \textquotedbl{}Pedro\textquotedbl{}, Fig 11.
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\linewidth]{chatPerspectivaPedro}
+		\caption{}
+		\label{fig:chatperspectivapedro}
+	\end{figure}
+	
+	Chat desde la perspectiva de \textquotedbl{}Ana\textquotedbl{}, Fig 12.
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\linewidth]{chatPerspectivaAna}
+		\caption{}
+		\label{fig:chatperspectivaana}
+	\end{figure}
+	
+	Si un usuario quiere abandonar el chat, debe escribir la palabra "QUIT", por ejemplo \textquotedbl{}Ana\textquotedbl{}, Fig 13.
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\linewidth]{anaQuit}
+		\caption{}
+		\label{fig:anaquit}
+	\end{figure}
+	
+	Los demás usuarios son notificados de que un usuario abandono el chat, Fig 14.
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\linewidth]{notificationAnaLeft}
+		\caption{}
+		\label{fig:notificationanaleft}
+	\end{figure}
+	
+	\section{Link Repositorio GitHub}
+	
+	En el siguiente enlace puede encontrar el código completo de la implementación del chat básico en Python.\\
+	
+	Repositorio: \url{https://github.com/aurquiel/chatbasicopython}
+
+	\section{Conclusión}
+	
+	Esta implementación demuestra los conceptos fundamentales de los sistemas distribuidos en un contexto práctico. El modelo cliente-servidor con sockets TCP proporciona una base solida para aplicaciones de comunicación en red. El uso de hilos permite concurrencia tanto en el servidor (para manejar multiples clientes) como en el cliente (para tener un UI responsiva). Aunque es una implementación básica, ilustra claramente los principios arquitectonicos que subyacen a sistemas distribuidos y la comunicación que implementan.
+	
+\end{document}
