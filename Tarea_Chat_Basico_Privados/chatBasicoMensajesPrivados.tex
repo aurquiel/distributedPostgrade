@@ -1,0 +1,468 @@
+\documentclass[acmlarge]{acmart}
+
+\usepackage{booktabs} % For formal tables
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath}
+\usepackage{algorithmic}
+\usepackage{listings}
+\usepackage{hyperref} % Paquete necesario
+
+\lstset{
+	inputencoding=utf8,
+	extendedchars=true,
+	literate={á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+	{Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+	{ñ}{{\~n}}1 {Ñ}{{\~N}}1 {¿}{{?`}}1 {¡}{{!`}}1,
+	upquote=true,
+	breaklines=true,
+	basicstyle=\ttfamily\small
+}
+
+
+\usepackage[ruled]{algorithm2e} % For algorithms
+\renewcommand{\algorithmcfname}{ALGORITHM}
+\SetAlFnt{\small}
+\SetAlCapFnt{\small}
+\SetAlCapNameFnt{\small}
+\SetAlCapHSkip{0pt}
+\IncMargin{-\parindent}
+
+% Metadata Information
+\acmJournal{PACMHCI}
+\acmVolume{1}
+\acmNumber{1}
+\acmArticle{1}
+\acmYear{2026}
+\acmMonth{1}
+\acmArticleSeq{1}
+
+% Copyright
+\setcopyright{none}
+
+\usepackage{xcolor}
+
+\lstset{
+	language=Python,
+	basicstyle=\ttfamily\small,
+	keywordstyle=\color{blue},
+	stringstyle=\color{red},
+	commentstyle=\color{green!50!black},
+	breaklines=true,        % Ajusta automáticamente el texto al ancho de página
+	breakatwhitespace=true, % Corta solo en espacios para no romper palabras
+	showstringspaces=false,
+	numbers=left,           % Opcional: añade números de línea
+	numberstyle=\tiny,
+	frame=single,           % Opcional: añade un marco al código
+	tabsize=4,
+	columns=fullflexible,
+	keepspaces=true        % Mantiene los espacios para la identación
+}
+
+% Document starts
+\begin{document}
+	
+	% Title portion
+	\title{Chat Mejorado en Python: Mensajes Privados y Sincronización con Lock} 
+	\author{GÓMEZ EDGAR}
+	\affiliation{%
+		\institution{Universidad Central de Venezuela}
+		\city{Caracas}
+		\country{Venezuela}}
+	
+	\begin{abstract}
+		Se presenta una versión mejorada de un sistema de chat distribuido en Python basado en arquitectura cliente-servidor. La nueva implementación incorpora funcionalidades de mensajería privada entre usuarios y utiliza mecanismos de sincronización (Lock) para prevenir condiciones de carrera en el acceso concurrente a las estructuras de datos compartidas. El servidor maneja múltiples conexiones mediante sockets TCP y hilos, implementando tanto la retransmisión pública de mensajes como la entrega selectiva de mensajes privados. Se detallan las modificaciones en el protocolo de comunicación, la estructura de clases extendida y las técnicas de sincronización empleadas. El trabajo ejemplifica conceptos avanzados de sistemas distribuidos como concurrencia segura, comunicación selectiva y control de acceso a recursos compartidos.
+	\end{abstract}
+	
+	\ccsdesc[500]{Organización de sistemas informáticos~Sistemas Distribuidos}
+	\ccsdesc[400]{Organización de sistemas informáticos~Cliente Servidor}
+	\ccsdesc[300]{Organización de sistemas informáticos~Concurrencia}
+	\ccsdesc[200]{Organización de sistemas informáticos~Sincronización}
+	
+	\keywords{Sistemas Distribuidos, Cliente Servidor, Concurrencia, Sincronización, Mensajes Privados}
+	
+	
+	\maketitle
+	
+	En este artículo presentamos una mejora significativa al sistema de chat básico previamente implementado. La nueva versión incorpora dos funcionalidades críticas: (1) la capacidad de enviar mensajes privados entre usuarios específicos, y (2) el uso de mecanismos de sincronización (Lock) para prevenir condiciones de carrera en el acceso concurrente a las estructuras de datos compartidas. Estas mejoras transforman el sistema de un chat público simple a una plataforma de comunicación más robusta y versátil, mientras que abordan problemas fundamentales de la programación concurrente en sistemas distribuidos.
+	
+	\section{Mejoras Implementadas}
+	
+	\subsection{Mensajes Privados}
+	
+	Se ha extendido el protocolo de comunicación para permitir dos tipos de mensajes:
+	
+	\begin{enumerate}
+		\item \textbf{Mensajes públicos}: Se envían a todos los usuarios conectados (funcionalidad original).
+		\item \textbf{Mensajes privados}: Se envían únicamente a un usuario específico, utilizando una sintaxis especial.
+	\end{enumerate}
+	
+	La sintaxis para mensajes privados es: \texttt{\textbackslash w nombre\_usuario\_destino mensaje}
+	
+	
+	\subsection{Sincronización con Lock}
+	
+	Dado que múltiples hilos acceden concurrentemente a las listas de clientes (\texttt{clients\_sockets\_list} y \\ \texttt{clients\_names\_list}), se ha introducido un objeto \texttt{Lock} para sincronizar el acceso. Esto previene condiciones de carrera que podrían ocurrir cuando:
+	
+	\begin{itemize}
+		\item Un nuevo cliente se conecta (añadiendo elementos a las listas).
+		\item Un cliente se desconecta (removiendo elementos de las listas).
+		\item Se busca un cliente para enviar un mensaje privado (consultando las listas).
+		\item Se itera sobre las listas para enviar mensajes de broadcast.
+	\end{itemize}
+	
+	\section{Implementación del Servidor Mejorado}
+	
+	\subsection{Estructura de la Clase ChatServer Mejorada}
+	
+	Se ha modificado la clase \texttt{ChatServer} para incorporar las nuevas funcionalidades:
+	
+	\begin{lstlisting}[language=Python, caption=Constructor mejorado de ChatServer]
+		class ChatServer:
+			def __init__(self, host_ip=socket.gethostbyname(socket.gethostname()), host_port=12345):
+				self.clients_sockets_list = []
+				self.clients_names_list = []
+				self.clients_lock = threading.Lock()  # Nuevo: Lock para sincronización
+				self.server_socket = None
+				
+				self.HOST_IP = host_ip
+				self.HOST_PORT = host_port
+				self.ENCODER = "utf-8"
+				self.BUFFER_SIZE = 1024
+	\end{lstlisting}
+	
+	La principal adición es \texttt{self.clients\_lock}, un objeto de sincronización que garantiza acceso exclusivo a las listas compartidas de usuarios y sockets de usaurio.
+	
+	\subsection{Detección de Mensajes Privados}
+	
+	Se ha añadido un método para identificar mensajes privados:
+	
+	\begin{lstlisting}[language=Python, caption=Detección de mensajes privados]
+		def is_private_message(self, message):
+		return message.startswith("\\w")
+	\end{lstlisting}
+	
+	Este método verifica si un mensaje comienza con la secuencia especial \texttt{\textbackslash w} que indica un mensaje privado.
+	
+	\subsection{Envío de Mensajes Privados}
+	
+	El método \texttt{send\_private\_message()} maneja la entrega selectiva de mensajes:
+	
+	\begin{lstlisting}[language=Python, caption=Envío de mensajes privados]
+		def send_private_message(self, from_client, to_client, message):
+			with self.clients_lock:
+				if to_client in self.clients_names_list:
+					to_index = self.clients_names_list.index(to_client)
+					to_socket = self.clients_sockets_list[to_index]
+				else:
+					to_index = None
+					to_socket = None
+			
+				if from_client in self.clients_names_list:
+					from_index = self.clients_names_list.index(from_client)
+					from_socket = self.clients_sockets_list[from_index]
+				else:
+					from_index = None
+					from_socket = None
+			
+			if to_socket:
+				private_message = f"priv({from_client}): {message}"
+				try:
+					to_socket.send(private_message.encode(self.ENCODER))
+					print(f"Private message from '{from_client}' to '{to_client}': {message}")
+				except Exception as ex:
+					print(f"Socket error: {ex}")
+			elif from_socket:
+				error_message = f"User '{to_client}' not found."
+				try:
+					from_socket.send(error_message.encode(self.ENCODER))
+					print(f"Private message error: User '{to_client}' not found for '{from_client}'")
+				except Exception as ex:
+					print(f"Socket error: {ex}")
+	\end{lstlisting}
+	
+	Características importantes:
+	\begin{itemize}
+		\item Utiliza \texttt{with self.clients\_lock:} para acceso seguro a las listas.
+		\item Busca el socket del destinatario en las listas de clientes.
+		\item Envía el mensaje solo al destinatario con formato especial \texttt{priv(remitente): mensaje}.
+		\item Maneja el caso donde el destinatario no existe, notificando al remitente.
+	\end{itemize}
+	
+	\subsection{Broadcast Mejorado con Sincronización}
+	
+	El método \texttt{broadcast\_message()} ha sido actualizado para usar el lock:
+	
+	\begin{lstlisting}[language=Python, caption=Broadcast con sincronización]
+		def broadcast_message(self, message):
+			with self.clients_lock:
+				sockets_snapshot = list(self.clients_sockets_list)
+		
+			for client_socket in sockets_snapshot:
+				try:
+					client_socket.send(message.encode(self.ENCODER))
+				except Exception as ex:
+					print(f"Socket error: {ex}")
+					with self.clients_lock:
+						if client_socket in self.clients_sockets_list:
+							client_index = self.clients_sockets_list.index(client_socket)
+							client_name = self.clients_names_list[client_index]
+							self.clients_sockets_list.remove(client_socket)
+							self.clients_names_list.remove(client_name)
+					client_socket.close()
+					self.broadcast_message(f"{client_name} has left the chat.\n")
+	\end{lstlisting}
+	
+	Mejoras implementadas:
+	\begin{itemize}
+		\item Se crea una copia de la lista de sockets dentro del contexto del lock.
+		\item Se itera sobre la copia en lugar de la lista original, evitando problemas si la lista cambia durante la iteración.
+		\item El manejo de errores también utiliza el lock para modificar las listas de manera segura.
+	\end{itemize}
+	
+	\subsection{Recepción de Mensajes Mejorada}
+	
+	El método \texttt{recieve\_message()} ahora distingue entre mensajes públicos y privados:
+	
+	\begin{lstlisting}[language=Python, caption=Recepción de mensajes mejorada]
+		def recieve_message(self, client_socket):
+			while True:
+			try:
+				message = client_socket.recv(self.BUFFER_SIZE).decode(self.ENCODER)
+				if message == "QUIT":
+					with self.clients_lock:
+						client_index = self.clients_sockets_list.index(client_socket)
+						client_name = self.clients_names_list[client_index]
+						self.clients_sockets_list.remove(client_socket)
+						self.clients_names_list.remove(client_name)
+					client_socket.close()
+					self.broadcast_message(f"{client_name} has left the chat.\n")
+				elif self.is_private_message(message):
+					parts = message.split(' ', 2)
+					if len(parts) >= 3:
+						to_client = parts[1]
+						private_message = parts[2]
+						with self.clients_lock:
+							client_index = self.clients_sockets_list.index(client_socket)
+							from_client = self.clients_names_list[client_index]
+					self.send_private_message(from_client, to_client, private_message)
+				else:
+					with self.clients_lock:
+						client_index = self.clients_sockets_list.index(client_socket)
+						client_name = self.clients_names_list[client_index]
+					full_message = f"{client_name}: {message}"
+					print(full_message)
+					self.broadcast_message(full_message)
+				
+			except Exception as ex:
+				print(f"Socket error: {ex}")
+				with self.clients_lock:
+					if client_socket in self.clients_sockets_list:
+						client_index = self.clients_sockets_list.index(client_socket)
+						client_name = self.clients_names_list[client_index]
+						self.clients_sockets_list.remove(client_socket)
+						self.clients_names_list.remove(client_name)
+					else:
+						client_name = "Unknown"
+				client_socket.close()
+				self.broadcast_message(f"{client_name} has left the chat.\n")
+				break
+	\end{lstlisting}
+	
+	Flujo mejorado:
+	\begin{enumerate}
+		\item Si el mensaje es "QUIT", maneja la desconexión ordenada con sincronización.
+		\item Si es un mensaje privado (detectado por \texttt{is\_private\_message()}), extrae destinatario y mensaje, luego llama a \texttt{send\_private\_message()}.
+		\item Si es un mensaje público normal, lo retransmite a todos.
+		\item Todas las operaciones sobre las listas utilizan el lock para sincronización.
+	\end{enumerate}
+	
+	\subsection{Conexión de Clientes con Sincronización}
+	
+	El método \texttt{connect\_client()} también ha sido actualizado para menjar concurrencia con los recursos compartidps:
+	
+	\begin{lstlisting}[language=Python, caption=Conexión de clientes con sincronización]
+		def connect_client(self):
+			while True:
+				client_socket, client_address = self.server_socket.accept()
+				print(f"Connection established with {client_address}...")
+				
+				name_flag = "NAME"
+				client_socket.send(name_flag.encode(self.ENCODER))
+				client_name = client_socket.recv(self.BUFFER_SIZE).decode(self.ENCODER)
+				
+				with self.clients_lock:  # Sincronización al añadir nuevo cliente
+					self.clients_sockets_list.append(client_socket)
+					self.clients_names_list.append(client_name)
+				
+				print(f"Client '{client_name}' connected.")
+				welcome_message = f"Welcome to the chat, {client_name}!\n"
+				client_socket.send(welcome_message.encode(self.ENCODER))
+				self.broadcast_message(f"{client_name} has joined the chat.\n")
+				
+				recieve_message_thread = threading.Thread(target=self.recieve_message, args=(client_socket,))
+			recieve_message_thread.start()
+	\end{lstlisting}	
+	
+	\section{Protocolo de Comunicación Extendido}
+	
+	El protocolo ahora soporta tres tipos de mensajes:
+	
+	\begin{enumerate}
+		\item \textbf{Conexión inicial y handshake de nombre} (sin cambios):
+		\begin{itemize}
+			\item Servidor → Cliente: "NAME"
+			\item Cliente → Servidor: nombre del usuario
+		\end{itemize}
+		
+		\item \textbf{Mensajes públicos} (sin cambios):
+		\begin{itemize}
+			\item Cliente → Servidor: mensaje de texto
+			\item Servidor → Todos: "nombre: mensaje"
+		\end{itemize}
+		
+		\item \textbf{Mensajes privados} (nuevo):
+		\begin{itemize}
+			\item Cliente → Servidor: "\textbackslash w nombre\_usaurio\_destino mensaje"
+			\item Servidor → Destinatario: "priv(nombre\_remitente): mensaje"
+			\item Servidor → Remitente (si destinatario no existe): "User 'nombre\_destino' not found."
+		\end{itemize}
+		
+		\item \textbf{Desconexión} (mejorada con sincronización):
+		\begin{itemize}
+			\item Cliente → Servidor: "QUIT"
+			\item Servidor (con lock): Remueve cliente de listas
+			\item Servidor → Todos: "nombre ha left the chat."
+		\end{itemize}
+	\end{enumerate}
+	
+	\section{Problemas de Concurrencia Resueltos}
+	
+	\subsection{Condiciones de Carrera}
+	
+	En la versión original, múltiples hilos podían acceder simultáneamente a las listas de clientes, causando condiciones de carrera como:
+	
+	\begin{itemize}
+		\item Un hilo iterando sobre la lista mientras otro añade/elimina elementos.
+		\item Dos hilos intentando eliminar el mismo cliente simultáneamente.
+		\item Un hilo buscando un cliente que otro hilo está eliminando.
+	\end{itemize}
+	
+	\subsection{Solución con Lock}
+	
+	El uso de \texttt{threading.Lock()} proporciona:
+	
+	\begin{enumerate}
+		\item \textbf{Exclusión mutua}: Solo un hilo puede ejecutar el código protegido por el lock a la vez.
+		\item \textbf{Consistencia}: Las operaciones sobre las listas son atómicas desde la perspectiva de otros hilos.
+		\item \textbf{Prevención de corrupción de datos}: Evita que las listas queden en estado inconsistente.
+	\end{enumerate}
+	
+	\subsection{Patrón \textquotedbl{}Snapshot\textquotedbl{}}
+	
+	En el método \texttt{broadcast\_message()}, se utiliza el patrón de crear una copia (snapshot) de la lista dentro del contexto del lock:
+	
+	\begin{lstlisting}[language=Python, caption=Patrón snapshot para iteración segura]
+		with self.clients_lock:
+			sockets_snapshot = list(self.clients_sockets_list)
+		# Iterar sobre la copia fuera del lock
+		for client_socket in sockets_snapshot:
+			# Enviar mensajes...
+	\end{lstlisting}
+	
+	Esto permite:
+	\begin{itemize}
+		\item Mantener el lock por el menor tiempo posible (solo para crear la copia).
+		\item Evitar bloquear otras operaciones durante el envío de mensajes.
+		\item Prevenir problemas si la lista cambia durante la iteración.
+	\end{itemize}
+	
+	\section{Ventajas de la Implementación Mejorada}
+	
+	\begin{itemize}
+		\item \textbf{Funcionalidad extendida}: Soporte para mensajes privados además de públicos.
+		\item \textbf{Concurrencia segura}: Uso de locks para prevenir condiciones de carrera.
+		\item \textbf{Robustez mejorada}: Manejo más seguro de desconexiones concurrentes.
+		\item \textbf{Escalabilidad}: La sincronización permite mayor número de clientes concurrentes sin corrupción de datos.
+		\item \textbf{Modularidad}: Separación clara entre lógica de mensajes públicos y privados.
+	\end{itemize}
+	
+	\section{Ejecución del Chat Básico con mensajes privados y sincronización de recursos}
+	
+	Ejecutamos el servidor, donde podemos ver la IP del servidor y el puerto Fig 1.
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\linewidth]{iniciarServidor}
+		\caption{}
+		\label{fig:iniciarservidor}
+	\end{figure}
+	
+	Iniciamos tres clientes \textquotedbl{}Luis\textquotedbl{} Fig 2, \textquotedbl{}Pedro\textquotedbl{} Fig 3 y \textquotedbl{}Ana\textquotedbl{} Fig 4.
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\linewidth]{luisInicia}
+		\caption{}
+		\label{fig:luisinicia}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\linewidth]{pedroInicia}
+		\caption{}
+		\label{fig:pedroinicia}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\linewidth]{anaInicia}
+		\caption{}
+		\label{fig:anainicia}
+	\end{figure}
+	
+	Se desarrolla una conversación donde \textquotedbl{}Luis\textquotedbl{} y \textquotedbl{}Ana\textquotedbl{} intercambian mensajes privados y tambien hay mensajes públicos, asi como tambien \textquotedbl{}Pedro\textquotedbl{} intenta enviar un mensaje privado a un usuario inexistente.
+	
+	Chat desde la perspectiva de \textquotedbl{}Luis\textquotedbl{}, se envian mensajes privados entre él y \textquotedbl{}Ana\textquotedbl{} tambien se obvervan todos los mensajes públicos Fig 5.
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\linewidth]{perspectivaluis}
+		\caption{}
+		\label{fig:perspectivaluis}
+	\end{figure}
+	
+	Chat desde la perspectiva de \textquotedbl{}Ana\textquotedbl{}, se observan los mensajes privados y públicos Fig 6.
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\linewidth]{perspectivaAna}
+		\caption{}
+		\label{fig:perspectivaana}
+	\end{figure}
+	
+	Chat desde la perspectiva de \textquotedbl{}Pedro\textquotedbl{},  no se observan los mensajes privados entre \textquotedbl{}Luis\textquotedbl{} y \textquotedbl{}Ana\textquotedbl{}, se captura el error de enviar un mensaje privado a un usuario inexistente Fig 7.
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\linewidth]{perspectivaPedro}
+		\caption{}
+		\label{fig:perspectivapedro}
+	\end{figure}
+	
+	
+	\section{Link Repositorio GitHub}
+	
+	En el siguiente enlace puede encontrar el código completo de la implementación del chat básico con mensajes privados y sincronización de recursos en Python.\\
+	
+	Repositorio: \url{https://github.com/aurquiel/chatbasicopython/tree/private_message}
+	
+	\section{Conclusión}
+	
+	La implementación mejorada del sistema de chat demuestra conceptos avanzados de sistemas distribuidos y programación concurrente. La adición de mensajes privados transforma el sistema de una herramienta de comunicación grupal simple a una plataforma más versátil, mientras que el uso de mecanismos de sincronización (Lock) aborda problemas fundamentales de la concurrencia. 
+	
+	Esta evolución ilustra cómo los sistemas distribuidos deben balancear funcionalidad con seguridad concurrente, y cómo las abstracciones de sincronización son esenciales para construir sistemas robustos y escalables. El trabajo sirve como ejemplo práctico de diseño e implementación de sistemas de comunicación en red que requieren manejo seguro de recursos compartidos en entornos concurrentes.
+	
+\end{document}
