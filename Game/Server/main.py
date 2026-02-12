@@ -58,7 +58,7 @@ while runing: #Aqui va pygame
 
     host_rect = pygame.Rect(20, 20, 420, 70)
     port_rect = pygame.Rect(460, 20, 420, 70)
-
+    
     pygame.draw.rect(display_surface, panel_bg, host_rect)
     pygame.draw.rect(display_surface, panel_bg, port_rect)
 
@@ -66,8 +66,7 @@ while runing: #Aqui va pygame
     pygame.draw.rect(display_surface, panel_border, port_rect, 2)
 
     host_title = title_font.render("HOST", True, WHITE)
-    port_title = title_font.render("PORT", True, WHITE)
-    hint_title = title_font.render("CONTROLS", True, WHITE)
+    port_title = title_font.render("PUERTO", True, WHITE)
 
     host_value = font.render(f"{HOST_IP if HOST_IP else 'N/A'}", True, WHITE)
     port_value = font.render(f"{HOST_PORT if HOST_PORT else 'N/A'}", True, WHITE)
@@ -83,7 +82,7 @@ while runing: #Aqui va pygame
     pygame.draw.rect(display_surface, panel_bg, events_rect)
     pygame.draw.rect(display_surface, panel_border, events_rect, 2)
 
-    events_title = title_font.render("SERVER EVENTS", True, WHITE)
+    events_title = title_font.render("EVENTOS EN EL SERVIDOR", True, WHITE)
     display_surface.blit(events_title, (events_rect.x + 10, events_rect.y + 8))
 
     # Mostrar últimos N eventos

@@ -60,3 +60,6 @@ class Player:
         self.player_value = value
         return value > 21
     
+    def has_cards(self):
+        return len(self.hand) > 0
+    

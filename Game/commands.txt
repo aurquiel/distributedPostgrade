@@ -2,10 +2,21 @@ COMANDOS DEL JUEGO
 
 \\n <user_name> #ESTE COMANDO ES UN JUGADOR PIDIENDO INGRESAR AL JUEGO
 \\f #SERVIDOR ESTA LLENO
+\\i #JUEGO YA COMENZO
+\\k <user_name> <card1> <card2> #DAR DOS CARTAS A CADA JUGADOR
+\\x <user_name> #DAR TURNO A JUGADOR
+\\z <user_name> #FINALIZO TURNO
 \\m <user_name> <monto> #EL JUGADOR CARGA SALDO PUEDE OCURRIR EN CUALQUIER MOMENTO DE LA PARTIDA
 \\a <user_name> <monto_apuesta> <monto_saldo> #MONTO DE LA APUESTA
 \\t #MONTO SOBRE PASA AL BALANCE INICIAL
 \\p <user_name> #PLANTARSE
-\\h <user_name> #TOMAR UNA CARTA
+\\h <user_name> <card> <card> #TOMAR UNA CARTA MUESTRA EL TOTAL DE CARTAS
 \\d <user_name> #DOBLAR APUESTA
 \\l <user_name> #JUGADOR HA PERDIDO
+\\s <card> <card> .... #CARTAS QUE HA TOMADO EL SERVIDOR
+\\v <puntaje> #PUNTAJE DEL SERVIDOR
+\\w <user_name> <nuevo_balance> #JUGADOR GANA SE LE DA EL DOBLE DE LA APUESTA
+\\g <user_name> <nuevo_balance> #JUGADOR EMPATA
+\\r #RESET GAME FOR A NEW ROUND
+\\u <user_name> #JUGADOR DESCONNECTADO DEL JUEGO
+\\e <user_name> #mensaje de texto a jugadores
