@@ -1,4 +1,5 @@
 import pygame
+import webbrowser
 from pathlib import Path
 from domain.Connection import Connection
 from domain.Game import Game
@@ -56,7 +57,8 @@ menu_items = [
     "Iniciar Juego",
     "Ver Video Promocional",
     "Ver Reglas",
-    "Configurar Conexión"
+    "Configurar Conexión",
+    "README"
 ]
 menu_area = pygame.Rect(80, 120, 520, 520)
 buttons = []
@@ -66,6 +68,8 @@ btn_w, btn_h = 480, 70
 ip_rect = pygame.Rect(720, 260, 360, 50)
 port_rect = pygame.Rect(720, 340, 360, 50)
 back_rect = pygame.Rect(80, 710, 180, 50)
+rules_back_rect = pygame.Rect(WINDOWS_WIDTH - 200, 50, 140, 44)
+config_back_rect = pygame.Rect(WINDOWS_WIDTH - 200, 50, 140, 44)
 
 # Video
 video_rect = pygame.Rect(80, 140, 1040, 560)
@@ -227,9 +231,16 @@ while runing:
                             current_view = "rules"
                         elif idx == 3:
                             current_view = "config"
+                        elif idx == 4:
+                            webbrowser.open("https://github.com/aurquiel/DistributedBlackjack")
 
-            elif current_view in ("config", "video", "rules"):
-                if back_rect.collidepoint(event.pos):
+            elif current_view == "config":
+                if config_back_rect.collidepoint(event.pos):
+                    current_view = "menu"
+
+            elif current_view in ("video", "rules"):
+                target_back_rect = rules_back_rect if current_view == "rules" else back_rect
+                if target_back_rect.collidepoint(event.pos):
                     if current_view == "video":
                         close_video()
                     current_view = "menu"
@@ -341,7 +352,7 @@ while runing:
 
         draw_input(ip_rect, f"IP: {HOST_IP}", active_input == "ip")
         draw_input(port_rect, f"PORT: {HOST_PORT}", active_input == "port")
-        draw_button(back_rect, "Volver", back_rect.collidepoint(mouse_pos))
+        draw_button(config_back_rect, "Volver", config_back_rect.collidepoint(mouse_pos))
 
     elif current_view == "video":
         title = title_font.render("VIDEO PROMOCIONAL", True, WHITE)
@@ -391,13 +402,19 @@ while runing:
             "Tras \\z de todos, crupier juega (\\s cartas del crupier, \\v valor de la mano del crupier)",
             "resultado \\w gana jugador, \\g empate, \\l pierde jugador.",
             "\\b limpia mesa para la siguiente ronda.",
+            "  ",
+            "--- Autoridad del servidor ---",
+            "El servidor valida apuestas y saldo",
+            "El servidor reparte cartas, asigna turnos (\\x) y calcula resultados.",
+            "Los clientes solo muestran el estado recibido y envían comandos;",
+            "La fuente de verdad siempre es el servidor central.",
         ]
         y = 140
         for line in lines:
-            screen.blit(font.render(line, True, WHITE), (80, y))
+            screen.blit(small_font.render(line, True, WHITE), (80, y))
             y += 32
 
-        draw_button(back_rect, "Volver", back_rect.collidepoint(mouse_pos))
+        draw_button(rules_back_rect, "Volver", rules_back_rect.collidepoint(mouse_pos))
 
     elif current_view == "game":
         screen.fill(TABLE_GREEN)
