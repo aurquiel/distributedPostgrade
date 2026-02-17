@@ -9,11 +9,10 @@ class Player:
         self.lose_game = False
         self.win_game = False
         self.tide_game = False
-        self.finished_turn = False
 
     def set_lose_game(self, lose_game):
         self.lose_game = lose_game
-    
+
     def set_win_game(self, win_game):
         self.win_game = win_game
 
@@ -29,6 +28,9 @@ class Player:
     def add_balance(self, amount):
         self.balance += amount
 
+    def set_balance(self, amount):
+        self.balance = amount
+
     def get_balance(self):
         return self.balance
     
@@ -36,11 +38,7 @@ class Player:
         return self.bet_balance
     
     def set_bet_balance(self, amount):
-        if amount > self.balance:
-            return False
         self.bet_balance += amount
-        self.balance -= amount
-        return True
     
     def clear_bet(self):
         self.bet_balance = 0
@@ -51,34 +49,33 @@ class Player:
     def get_has_turn(self):
         return self.has_turn
     
-    def has_more_than_21(self):
-        value = 0
+    def calculate_hand_value(self):
+        if not self.hand:
+            return 0
+
+        total = 0
         aces = 0
 
         for card in self.hand:
-            rank = card.split("-")[1]  # asumiendo formato "suit-rank"
-            if "a" in rank:
-                aces += 1
-                value += 11
-            elif rank in ("j", "q", "k"):
-                value += 10
-            else:
-                value += int(rank)
+            try:
+                _, value_code = card.split("-", 1)
+            except ValueError:
+                continue
 
-        # Ajustar Ases de 11 a 1 si se pasa de 21
-        while value > 21 and aces > 0:
-            value -= 10
+            value_code = value_code.lower()
+            if value_code == "a":
+                total += 11
+                aces += 1
+            elif value_code in ("k", "q", "j"):
+                total += 10
+            else:
+                try:
+                    total += int(value_code)
+                except ValueError:
+                    continue
+
+        while total > 21 and aces:
+            total -= 10
             aces -= 1
 
-        self.player_value = value
-        return value > 21
-
-    def set_finished_turn(self, finished):
-        self.finished_turn = finished
-
-    def get_finished_turn(self):
-        return self.finished_turn
-    
-    def has_cards(self):
-        return len(self.hand) > 0
-    
+        return total

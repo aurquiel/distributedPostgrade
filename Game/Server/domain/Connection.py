@@ -14,6 +14,25 @@ class Connection:
         self.commands_lock = threading.Lock()
         self.MAX_PLAYERS = MAX_PLAYERS
 
+    def _drop_player(self, player_socket, reason=""):
+        """Remove player safely and emit disconnect command."""
+        try:
+            player_name = self.get_player_name_by_socket(player_socket)
+        except Exception:
+            player_name = None
+
+        self.remove_player_socket_and_name(player_socket, player_name)
+        try:
+            player_socket.close()
+        except Exception:
+            pass
+
+        if player_name:
+            self.commands_add(f"\\i {reason}" if reason else f"\\i Jugador '{player_name}' desconectado.")
+            self.commands_add(f"\\u {player_name}")
+        elif reason:
+            self.commands_add(f"\\i {reason}")
+
     def commands_add(self, command):
         with self.commands_lock:
             self.commands.append(command)
@@ -48,6 +67,14 @@ class Connection:
                 return self.player_sockets[index]
             else:
                 return None
+            
+    def get_player_name_by_socket(self, player_socket):
+        with self.players_lock:
+            if player_socket in self.player_sockets:
+                index = self.player_sockets.index(player_socket)
+                return self.player_names[index]
+            else:
+                return None
 
     def start_server(self, port):
         try:    
@@ -79,11 +106,11 @@ class Connection:
         
             #Receive the client's name
             header = player_socket.recv(10)
-            player_name = player_socket.recv(int(header.decode(self.ENCODER))).decode(self.ENCODER)
+            message = player_socket.recv(int(header.decode(self.ENCODER))).decode(self.ENCODER)
 
-            if player_name.startswith("\\n"):   
-                name = player_name.split()[1] # se elimina el caracter de nueva linea para obtener el nombre real del cliente
-                self.add_player_socket_and_name(player_socket, name)
+            if message.startswith("\\n"):   
+                player_name = message.split()[1] # se elimina el caracter de nueva linea para obtener el nombre real del cliente
+                self.add_player_socket_and_name(player_socket, player_name)
 
                 #Update the server, indiviudal client, and all other clients about the new connection
                 self.commands_add(f"\\n {player_name}")
@@ -93,6 +120,9 @@ class Connection:
                 recieve_message_thread.start()
 
     def send_message_to_player(self, player_socket, message):
+        if player_socket is None:
+            self.commands_add("\\i No se pudo enviar mensaje: socket inexistente.")
+            return
         try:
             header = str(len(message))
             while(len(header) < 10):
@@ -101,10 +131,7 @@ class Connection:
             player_socket.send(message.encode(self.ENCODER))
         except Exception as e:
             self.commands_add(f"\\i Error al enviar mensaje al jugador: {e}")
-            player_name = self.get_player_name_by_socket(player_socket)
-            self.remove_player_socket_and_name(player_socket, player_name)
-            player_socket.close()
-            self.commands_add(f"\\u {player_name}.") # esto elimina al jugador de la lista de jugadores del juego, uso interno para comunicarnos arriba con la clase game
+            self._drop_player(player_socket, reason="Error de envío; jugador desconectado")
 
 
     def recieve_message(self, player_socket):
@@ -115,10 +142,8 @@ class Connection:
                 self.commands_add(command.decode(self.ENCODER)) # se reciben los comandos del servidor y se guardan en una lista para ser procesados por el cliente
             except Exception as ex:
                 self.commands_add(f"\\i Error de socket: {ex}")
-                player_name = self.get_player_name_by_socket(player_socket)
-                self.remove_player_socket_and_name(player_socket, player_name)
-                player_socket.close()
-                self.commands_add(f"\\u {player_name}.") # esto elimina al jugador de la lista de jugadores del juego, uso interno para comunicarnos arriba con la clase game
+                self._drop_player(player_socket, reason="Error de socket; jugador desconectado")
+                break
 
     def broadcast_message(self, message):
         for player_socket in self.get_sockets_for_broadcast_message():
@@ -130,10 +155,7 @@ class Connection:
                 player_socket.send(message.encode(self.ENCODER))
             except Exception as ex:
                 self.commands_add(f"\\i Error de socket: {ex}")
-                player_name = self.get_player_name_by_socket(player_socket)
-                self.remove_player_socket_and_name(player_socket, player_name)
-                player_socket.close()
-                self.commands_add(f"\\u {player_name}.") # esto elimina al jugador de la lista de jugadores del juego, uso interno para comunicarnos arriba con la clase game
+                self._drop_player(player_socket, reason="Error al difundir; jugador desconectado")
     
     def get_host_ip(self):
         return self.HOST_IP
