@@ -79,6 +79,7 @@ video_frame_ms = 33
 video_last_tick = 0
 video_last_surface = None
 video_duration_ms = 0
+video_error_msg = None
 
 # Cartas y UI de juego
 CARD_SIZE = (90, 128)
@@ -187,27 +188,44 @@ def draw_hand(cards, center_pos, label, real_name, balance, bet, has_turn=False,
 
 
 def open_video():
-    global video_cap, video_fps, video_frame_ms, video_last_tick, video_duration_ms, video_last_surface
+    global video_cap, video_fps, video_frame_ms, video_last_tick, video_duration_ms, video_last_surface, video_error_msg
+    video_error_msg = None
     video_last_surface = None
-    if CV2_AVAILABLE:
-        video_cap = cv2.VideoCapture(VIDEO_PATH)
-        fps = video_cap.get(cv2.CAP_PROP_FPS)
-        video_fps = fps if fps and fps > 0 else 30
-        video_frame_ms = int(1000 / video_fps)
-        total_frames = int(video_cap.get(cv2.CAP_PROP_FRAME_COUNT))
-        video_duration_ms = int((total_frames / video_fps) * 1000) if total_frames > 0 else 0
-        video_last_tick = pygame.time.get_ticks()
-    else:
+
+    video_file = Path(VIDEO_PATH)
+    if not video_file.exists():
+        video_error_msg = "No se encontró el archivo promo.mp4 en assets."
         video_cap = None
+        return
+
+    if not CV2_AVAILABLE:
+        video_error_msg = "Instala opencv-python para mostrar el video."
+        video_cap = None
+        return
+
+    video_cap = cv2.VideoCapture(str(video_file))
+    if not video_cap.isOpened():
+        video_error_msg = "No se pudo abrir el video promo.mp4."
+        video_cap = None
+        return
+
+    fps = video_cap.get(cv2.CAP_PROP_FPS)
+    video_fps = fps if fps and fps > 0 else 30
+    video_frame_ms = int(1000 / video_fps)
+    total_frames = int(video_cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    video_duration_ms = int((total_frames / video_fps) * 1000) if total_frames > 0 else 0
+    video_last_tick = pygame.time.get_ticks()
+
     if Path(AUDIO_PATH).exists():
         pygame.mixer.music.load(AUDIO_PATH)
         pygame.mixer.music.play(0)
 
 def close_video():
-    global video_cap
+    global video_cap, video_error_msg
     if video_cap is not None:
         video_cap.release()
         video_cap = None
+    video_error_msg = None
     pygame.mixer.music.stop()
 
 while runing:
@@ -363,7 +381,10 @@ while runing:
         pygame.draw.rect(screen, (20, 20, 20), video_rect, border_radius=8)
         pygame.draw.rect(screen, (60, 60, 60), video_rect, 2, border_radius=8)
 
-        if CV2_AVAILABLE and video_cap is not None and video_cap.isOpened():
+        if video_error_msg:
+            msg_surface = font.render(video_error_msg, True, (255, 160, 160))
+            screen.blit(msg_surface, (video_rect.x + 20, video_rect.y + 20))
+        elif CV2_AVAILABLE and video_cap is not None and video_cap.isOpened():
             audio_ms = pygame.mixer.music.get_pos()
             if audio_ms < 0:
                 audio_ms = 0
