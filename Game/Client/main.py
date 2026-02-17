@@ -316,8 +316,10 @@ while runing:
             target = saldo_input_text if active_input_game == "saldo" else apuesta_input_text
             if event.key == pygame.K_BACKSPACE:
                 target = target[:-1]
-            elif len(event.unicode) == 1 and event.unicode.isdigit():
+            elif len(event.unicode) == 1 and event.unicode.isdigit() and len(target) < 4:
                 target += event.unicode
+
+            target = target[:4]  # Limitar a 4 caracteres para evitar números muy grandes
 
             if active_input_game == "saldo":
                 saldo_input_text = target
