@@ -15,6 +15,8 @@ Juego cliente-servidor en Python (pygame + sockets) para 1-3 jugadores contra el
 ### Arquitectura y decisiones de diseño
 
 - Autoridad central: el servidor es la fuente de verdad. Valida saldo, aplica apuestas, reparte cartas, asigna turnos y calcula resultados. Los clientes solo muestran estado y envían comandos.
+- Concurrencia: cada cliente se maneja en su propio hilo; el servidor ejecuta un hilo principal para aceptar conexiones y uno de lógica por cliente para procesar sus eventos sin bloquear al resto.
+- Procesamiento de comandos: los mensajes entrantes se encolan en una cola thread-safe y se consumen en serie con un `lock` que asegura exclusión mutua; esto evita condiciones de carrera al validar saldo, actualizar apuestas y rotar turnos.
 - Comunicación TCP con protocolo de texto y encabezado fijo de 10 bytes para la longitud, evitando lecturas truncadas y simplificando el parseo.
 - Manejo de cupos: arranque con 3 jugadores; si alguien se desconecta (`\u`), se libera el cupo y otro puede entrar.
 - Tolerancia a desconexiones: el servidor limpia sockets al recibir `\u`; el cliente reinicia su estado local ante fallos y puede reintentar conexión.
